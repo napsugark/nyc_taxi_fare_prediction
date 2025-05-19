@@ -3,6 +3,9 @@ __pycache__/
 credentials/
 discovery/
 data/
+mlflow/
+mlruns/
+mlartifact/
 .env
 .credentials/
 *.csv
