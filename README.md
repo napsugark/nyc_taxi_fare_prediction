@@ -11,7 +11,7 @@ The goal is to build a robust regression model that can accurately estimate the 
 - Passenger count
 - And other engineered features
 
-I use open datasets such as the https://www.kaggle.com/competitions/new-york-city-taxi-fare-prediction/data.
+I used open datasets such as the https://www.kaggle.com/competitions/new-york-city-taxi-fare-prediction/data.
 
 ## 📦 Project Structure
 nyc_tfp/
