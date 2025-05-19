@@ -3,7 +3,7 @@ import os
 import mlflow
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, root_mean_squared_error
 from mlflow.models.signature import infer_signature
 
 from preprocessing import add_cyclic_features, get_feature_lists, build_preprocessor
@@ -34,7 +34,7 @@ def main():
         y_pred = model.predict(X_test_preprocessed)
 
         mse = mean_squared_error(y_test, y_pred)
-        rmse = mse ** 0.5
+        rmse = root_mean_squared_error(y_test, y_pred)
 
         print(f"MSE: {mse:.4f}, RMSE: {rmse:.4f}")
 
