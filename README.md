@@ -18,10 +18,6 @@ nyc_tfp/
 ├── data/ # Raw and processed data
 ├── notebooks/ # Jupyter notebooks for EDA and prototyping
 ├── src/ # Source code
-│ ├── data/ # Data loading and preprocessing
-│ ├── features/ # Feature engineering
-│ ├── models/ # Model training and evaluation
-│ └── utils/ # Helper functions
 ├── tests/ # Unit and integration tests
 ├── pyproject.toml # Poetry configuration file
 ├── mlruns/ # MLflow tracking data
