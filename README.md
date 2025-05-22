@@ -66,7 +66,7 @@ mlflow ui
 ```
 Then open http://localhost:5000 in your browser to explore experiments, metrics, and model versions.
 
-## ✅ Testing
+## ✅ Testing - not implemented yet
 
 Run all tests with:
 
