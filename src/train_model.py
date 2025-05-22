@@ -2,9 +2,10 @@ import pandas as pd
 from pathlib import Path
 
 import mlflow
+from mlflow.models.signature import infer_signature
 from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.metrics import mean_squared_error, root_mean_squared_error, mean_absolute_error, r2_score
-from mlflow.models.signature import infer_signature
+from results_visuals import plot_and_save_grouped_bar_mlruns_metrics, plot_and_save_best_models_summary
 
 
 from constants import VERSION, EXPERIMENT_NAME, DATA_PATH, MODEL_TYPE, ALPHA
@@ -38,9 +39,11 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("mae", mae)
         mlflow.log_metric("r2", r2)
+        if model_type == 'Lasso':
+            mlflow.log_param("alpha", alpha)
 
         coefs = pd.DataFrame({"feature": feature_names, "coefficient": model.coef_})
-        coefs_file = Path(f"data/feature_importance_{version}_f{num_features}.csv")
+        coefs_file = Path(f"data/feature_importance/feature_importance_{version}_f{num_features}.csv")
         coefs.to_csv(coefs_file, index=False)
         mlflow.log_artifact(str(coefs_file))
 
@@ -62,5 +65,7 @@ def main():
 
     train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE,alpha=ALPHA)
 
+    plot_and_save_grouped_bar_mlruns_metrics(experiment_name=EXPERIMENT_NAME)
+    plot_and_save_best_models_summary(experiment_name=EXPERIMENT_NAME)
 if __name__ == "__main__":
     main()

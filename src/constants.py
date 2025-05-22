@@ -1,6 +1,6 @@
-VERSION = "v1"
+VERSION = "v4"
 MODEL_TYPE = "Lasso" # 'LinearRegression' or 'Lasso'
-ALPHA = 0.1 # for lasso regression
+ALPHA = 0.01 # for lasso regression
 
 #ORIGINAL COLUMNS
 # 'key', 'fare_amount', 'pickup_datetime', 'pickup_longitude', 'pickup_latitude','dropoff_longitude', 'dropoff_latitude', 'passenger_count'
@@ -12,7 +12,7 @@ NUMERIC_FEATURES = [
     'dropoff_latitude', 
     'trip_distance', #feature enginered column
     'passenger_count',
-    'pickup_datetime_year', #feature enginered column from pickup_datetime
+    # 'pickup_datetime_year', #feature enginered column from pickup_datetime
     # 'pickup_datetime_month', #feature enginered column from pickup_datetime
     # 'pickup_datetime_dayofyear', #feature enginered column from pickup_datetime
     # 'pickup_datetime_dayofweek', #feature enginered column from pickup_datetime
@@ -51,8 +51,8 @@ TARGET_FEATURE = 'fare_amount'
 # #v3 with feature trip_distance
 # SELECTED_COLUMNS = NUMERIC_FEATURES + CYCLIC_FEATURES + [TARGET_FEATURE]
 
-# #v4
+#v4
 SELECTED_COLUMNS = NUMERIC_FEATURES + BOOLEAN_FEATURES + CATEGORICAL_FEATURES + CYCLIC_FEATURES + [TARGET_FEATURE]
 
-DATA_PATH = "data/02_processed/df_cleaned.csv"
-EXPERIMENT_NAME = "NYC_Taxi_Fare_Prediction"
+DATA_PATH = "data/02_processed/df_cleaned_00.csv"
+EXPERIMENT_NAME = "NYC_Taxi_Fare_Pred"
