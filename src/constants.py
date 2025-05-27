@@ -1,4 +1,4 @@
-VERSION = "v4"
+VERSION = "v4_01"
 MODEL_TYPE = "Lasso" # 'LinearRegression' or 'Lasso'
 ALPHA = 0.01 # for lasso regression
 
@@ -12,7 +12,7 @@ NUMERIC_FEATURES = [
     'dropoff_latitude', 
     'trip_distance', #feature enginered column
     'passenger_count',
-    # 'pickup_datetime_year', #feature enginered column from pickup_datetime
+    'pickup_datetime_year', #feature enginered column from pickup_datetime
     # 'pickup_datetime_month', #feature enginered column from pickup_datetime
     # 'pickup_datetime_dayofyear', #feature enginered column from pickup_datetime
     # 'pickup_datetime_dayofweek', #feature enginered column from pickup_datetime
@@ -21,10 +21,10 @@ NUMERIC_FEATURES = [
 
 BOOLEAN_FEATURES = [
     'pickup_datetime_is_weekend', #feature enginered column
-    'is_late_night', #feature enginered column
-    'is_night',#feature enginered column
-    'is_early_morning', #feature enginered column
-    'is_rush_hour'#feature enginered column
+    'pickup_datetime_is_late_night', #feature enginered column
+    'pickup_datetime_is_night',#feature enginered column
+    'pickup_datetime_is_early_morning', #feature enginered column
+    'pickup_datetime_is_rush_hour'#feature enginered column
 ]
 
 CYCLIC_FEATURES = [
@@ -54,5 +54,5 @@ TARGET_FEATURE = 'fare_amount'
 #v4
 SELECTED_COLUMNS = NUMERIC_FEATURES + BOOLEAN_FEATURES + CATEGORICAL_FEATURES + CYCLIC_FEATURES + [TARGET_FEATURE]
 
-DATA_PATH = "data/02_processed/df_cleaned_00.csv"
+DATASET_DOWNLOAD_PATH = "data/01_raw"
 EXPERIMENT_NAME = "NYC_Taxi_Fare_Pred"
