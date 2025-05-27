@@ -5,7 +5,7 @@ import logging.handlers
 
 
 def configure_logger():
-    logs_directory_path = '../data/logs'
+    logs_directory_path = 'data/logs'
 
     if not os.path.exists(logs_directory_path):
         os.makedirs(logs_directory_path)
