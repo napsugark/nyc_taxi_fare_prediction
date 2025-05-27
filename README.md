@@ -54,6 +54,10 @@ poetry shell
 
 ## 🚀 Run the Pipeline
 
+### Get the dataset from kaggle
+
+- Requires kaggle.json file from your own account (Visit https://www.kaggle.com/settings and create new token for API) - or ask for credentials. 
+
 ### Training the model
 
 ```bash
