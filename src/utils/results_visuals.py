@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import mlflow
+from src.utils.logging_config import logger
 
 
 def plot_and_save_grouped_bar_mlruns_metrics(experiment_name, metrics=("r2", "mse", "rmse", "mae"), output_dir="mlruns_results"):
@@ -60,7 +61,7 @@ def plot_and_save_grouped_bar_mlruns_metrics(experiment_name, metrics=("r2", "ms
     plot_path = os.path.join(output_dir, "grouped_metrics_bar_chart.jpg")
     plt.savefig(plot_path, format="jpg", dpi=300)
     plt.close()
-    print(f"Saved grouped bar chart to {plot_path}")
+    logger.info(f"Saved grouped bar chart to {plot_path}")
 
 def plot_and_save_best_models_summary(experiment_name, metrics=("r2", "mse", "rmse", "mae"), output_dir="mlruns_results"):
 
@@ -115,4 +116,4 @@ def plot_and_save_best_models_summary(experiment_name, metrics=("r2", "mse", "rm
     summary_path = os.path.join(output_dir, "best_models_summary.jpg")
     plt.savefig(summary_path, format="jpg", dpi=300)
     plt.close()
-    print(f"Saved best models summary to {summary_path}")
+    logger.info(f"Saved best models summary to {summary_path}")
