@@ -1,21 +1,11 @@
 import pandas as pd
 import pytest
-from src.preprocessing import split_date_cols, calculate_haversine
+from src.preprocessing import split_date_cols, calculate_haversine, add_cyclic_features
 from math import isclose
 
-def test_split_date_cols_basic():
-    # Sample input
-    df = pd.DataFrame({
-        "timestamp": [
-            "2023-05-15 22:30:00",  # late night
-            "2023-05-16 02:15:00",  # night
-            "2023-05-17 05:45:00",  # early morning
-            "2023-05-17 07:10:00",  # rush hour
-            "2023-05-18 15:00:00",  # normal
-        ]
-    })
-
-    result = split_date_cols(df.copy(), "timestamp")
+def test_split_date_cols_basic(df_timestamps):
+    """Test basic functionality of split_date_cols."""
+    result = split_date_cols(df_timestamps.copy(), date_col="timestamp")
 
     assert all(col in result.columns for col in [
         "timestamp_dayofyear", "timestamp_month", "timestamp_year",
@@ -30,12 +20,9 @@ def test_split_date_cols_basic():
     assert result.loc[3, "timestamp_is_rush_hour"] == True
     assert result.loc[4, "timestamp_is_rush_hour"] == False
 
-def test_split_date_cols_invalid_date():
-    df = pd.DataFrame({
-        "timestamp": ["invalid-date", "2024-01-01 12:00:00"]
-    })
-
-    result = split_date_cols(df.copy(), "timestamp")
+def test_split_date_cols_invalid_date(df_invalid):
+    """Test handling of invalid date formats in the timestamp column."""
+    result = split_date_cols(df_invalid.copy(), "timestamp")
 
     # First row should be NaT
     assert pd.isna(result.loc[0, "timestamp"])
@@ -43,12 +30,9 @@ def test_split_date_cols_invalid_date():
     assert result.loc[1, "timestamp_year"] == 2024
 
 
-def test_split_date_cols_empty():
-    df = pd.DataFrame({
-        "timestamp": []
-    })
-
-    result = split_date_cols(df.copy(), "timestamp")
+def test_split_date_cols_empty(df_empty):
+    """Test handling of empty DataFrame."""
+    result = split_date_cols(df_empty.copy(), "timestamp")
 
     assert result.empty
     assert all(col in result.columns for col in [
@@ -88,3 +72,20 @@ def test_haversine_series_input():
 def test_haversine_invalid_input():
     with pytest.raises(ValueError):
         calculate_haversine("invalid", 0, 0, 0)
+
+def test_add_cyclic_features(df_cyclic):
+    """Test adding cyclic features to a DataFrame."""
+    result = add_cyclic_features(df_cyclic.copy())
+
+    assert "hour_sin" in result.columns
+    assert "hour_cos" in result.columns
+    assert "dow_sin" in result.columns
+    assert "dow_cos" in result.columns
+    assert "month_sin" in result.columns
+    assert "month_cos" in result.columns
+    assert "doy_sin" in result.columns
+    assert "doy_cos" in result.columns
+
+    # Check some values
+    assert isclose(result.loc[0, "hour_sin"], 0)
+    assert isclose(result.loc[0, "hour_cos"], 1)
