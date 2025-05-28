@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from src.utils.logging_config import logger
 
 
-def download_kaggle_competition_data(competition_name: str, dataset_download_path: str = "./data", expected_file: str = "train.csv"):
+def download_kaggle_competition_data(competition_name: str, dataset_download_path: str = "./data/01_raw", expected_file: str = "train.csv") -> None:
     """
     Downloads and extracts Kaggle competition data using environment variables for credentials.
     
