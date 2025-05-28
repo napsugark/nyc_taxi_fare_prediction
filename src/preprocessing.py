@@ -6,7 +6,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-from constants import SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE, DATASET_DOWNLOAD_PATH
+from src.constants import SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE, DATASET_DOWNLOAD_PATH
 
 import pandas as pd
 from pandas import DataFrame
