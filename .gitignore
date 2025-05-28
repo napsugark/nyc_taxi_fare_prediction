@@ -8,5 +8,6 @@ mlruns/
 mlartifact/
 .env
 .credentials/
+.coverage
 *.csv
 *.log
