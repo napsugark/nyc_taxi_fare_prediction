@@ -26,6 +26,7 @@ def load_data(file_path: Path) -> pd.DataFrame:
         pd.errors.EmptyDataError: If the file is empty.
     """
     try:
+        logger.info(f"Checking if file {file_path} exists...")
         download_kaggle_competition_data(competition_name="new-york-city-taxi-fare-prediction", dataset_download_path=DATASET_DOWNLOAD_PATH)
         logger.info(f"Loading data from {file_path}")
         df = pd.read_csv(file_path, parse_dates=['pickup_datetime'])
@@ -54,10 +55,18 @@ def split_date_cols(df: DataFrame, date_col: str) -> DataFrame:
         Exception: If any error occurs during processing, it is caught and
         an error message is printed. The original DataFrame is returned.
     """
+    if date_col not in df.columns:
+        raise KeyError(f"Column '{date_col}' not found in DataFrame.")
+
     try:
         logger.info(f"Splitting date column: {date_col}")
-        
+      
         df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
+
+        num_nats = df[date_col].isna().sum()
+        if num_nats > 0:
+            logger.warning(f"Column '{date_col}' has {num_nats} invalid datetime values converted to NaT.")
+
 
         df[f"{date_col}_dayofyear"] = df[date_col].dt.dayofyear
         df[f"{date_col}_month"] = df[date_col].dt.month
@@ -74,7 +83,8 @@ def split_date_cols(df: DataFrame, date_col: str) -> DataFrame:
         return df
 
     except Exception as e:
-        raise RuntimeError(f"Error while processing date column '{date_col}': {e}")
+        logger.exception(f"Unexpected error while processing column '{date_col}': {e}")
+        raise
     
 def calculate_haversine(lat1, lon1, lat2, lon2):
     """
