@@ -74,7 +74,7 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
         logger.info("Model logged successfully.")
 
 def main():
-    logger.debug("Starting the training process...")
+    logger.info("Starting the training process...")
     data_path = Path(DATASET_DOWNLOAD_PATH) / "train.csv"
     df = load_data(data_path)
     df = preprocess_data(df)

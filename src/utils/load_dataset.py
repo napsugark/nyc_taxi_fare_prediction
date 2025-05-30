@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from src.utils.logging_config import logger
 
 
-def download_kaggle_competition_data(competition_name: str, dataset_download_path: str = "./data/01_raw", expected_file: str = "train.csv") -> None:
+def download_kaggle_competition_data(competition_name: str, dataset_download_path: str = "data/01_raw", expected_file: str = "train.csv") -> None:
     """
     Downloads and extracts Kaggle competition data using environment variables for credentials.
     
@@ -35,6 +35,7 @@ def download_kaggle_competition_data(competition_name: str, dataset_download_pat
         logger.info(f"File '{extracted_file_path}' already exists. Skipping downloading from kaggle.")
         return
 
+    logger.info(f"Connecting to Kaggle API, downloading dataset to {dataset_download_path}...")
     api = KaggleApi()
     api.authenticate()
 
