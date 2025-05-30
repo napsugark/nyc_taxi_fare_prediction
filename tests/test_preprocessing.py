@@ -42,6 +42,10 @@ def test_split_date_cols_empty(df_empty):
         "timestamp_is_early_morning", "timestamp_is_rush_hour"
     ])
 
+def test_split_date_cols_missing_column(df_timestamps):
+    """Test handling when the date column is missing."""
+    with pytest.raises(KeyError, match="Column 'missing' not found in DataFrame."):
+        split_date_cols(df_timestamps.copy(), "missing")
 
 def test_haversine_known_distance():
     # Distance between New York City and London (~5567 km)
