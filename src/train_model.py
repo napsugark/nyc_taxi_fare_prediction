@@ -13,8 +13,8 @@ from src.utils.logging_config import logger
 from datetime import datetime
 
 
-from constants import DATASET_DOWNLOAD_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
-from preprocessing import load_data, prepare_features, preprocess_data, split_and_preprocess
+from src.constants import DATASET_DOWNLOAD_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
+from src.preprocessing import load_data, prepare_features, preprocess_data, split_and_preprocess
 
 def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE, alpha=ALPHA):
     if model_type == 'Lasso':
