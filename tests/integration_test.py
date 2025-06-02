@@ -67,31 +67,26 @@ def test_full_training_pipeline(unique_experiment_name):
         alpha=ALPHA
     )
 
-    # Check MLflow run exists
     experiment = mlflow.get_experiment_by_name(unique_experiment_name)
     assert experiment is not None, f"Experiment '{unique_experiment_name}' not found"
     runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
     assert not runs.empty, "No MLflow runs found"
 
-    # time.sleep(10)  # Wait for MLflow to log everything
+    # time.sleep(10)  
    
-    # runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id], order_by=["start_time DESC"])
     last_run = runs.iloc[0]
     logger.info(f"Metrics columns found: {[col for col in last_run.index if col.startswith('metrics.')]}")
-    # logger.info(f"MLflow run columns:\n{list(last_run.index)}")
-    # logger.info(f"MLflow run content:\n{last_run.to_dict()}")
-
+ 
 
     for metric in ["mse", "rmse", "mae", "r2"]:
         assert f"metrics.{metric}" in last_run, f"metrics.{metric} not found in MLflow run"
 
     artifact_uri = last_run["artifact_uri"]
     parsed_uri = urlparse(artifact_uri)
-    artifact_path = Path(parsed_uri.path.lstrip("/"))  # remove leading slash if present
+    artifact_path = Path(parsed_uri.path.lstrip("/"))  
     model_artifact = artifact_path / "model" / "MLmodel"
     assert model_artifact.exists(), f"MLmodel artifact not found at {model_artifact}"
 
-    # Check coefficient CSV exists
     coefs_dir = Path("data/feature_importance")
     coef_files = list(coefs_dir.glob(f"feature_importance_{VERSION}_f*.csv"))
     assert coef_files, "No feature importance CSV file found"
