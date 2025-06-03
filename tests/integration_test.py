@@ -41,6 +41,11 @@ def cleanup_before_and_after(unique_experiment_name):
 
     yield
 
+    # Cleanup after
+    experiment = mlflow.get_experiment_by_name(unique_experiment_name)
+    if experiment:
+        mlflow.delete_experiment(experiment.experiment_id)
+
 
 def test_full_training_pipeline(unique_experiment_name):
     logger.info("Starting full integration test of training pipeline")
@@ -72,7 +77,8 @@ def test_full_training_pipeline(unique_experiment_name):
     runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
     assert not runs.empty, "No MLflow runs found"
 
-    # time.sleep(10)  
+    # Wanted to check in mlflow that the metrics and artifacts were logged correctly
+    time.sleep()  
    
     last_run = runs.iloc[0]
     logger.info(f"Metrics columns found: {[col for col in last_run.index if col.startswith('metrics.')]}")
