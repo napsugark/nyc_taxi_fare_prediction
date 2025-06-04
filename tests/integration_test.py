@@ -78,7 +78,7 @@ def test_full_training_pipeline(unique_experiment_name):
     assert not runs.empty, "No MLflow runs found"
 
     # Wanted to check in mlflow that the metrics and artifacts were logged correctly
-    time.sleep()  
+    time.sleep(5)  
    
     last_run = runs.iloc[0]
     logger.info(f"Metrics columns found: {[col for col in last_run.index if col.startswith('metrics.')]}")
