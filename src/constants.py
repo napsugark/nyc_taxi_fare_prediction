@@ -1,4 +1,4 @@
-VERSION = "v4_01"
+VERSION = "v4_debug"
 MODEL_TYPE = "Lasso" # 'LinearRegression' or 'Lasso'
 ALPHA = 0.01 # for lasso regression
 
@@ -11,8 +11,8 @@ NUMERIC_FEATURES = [
     'dropoff_longitude',
     'dropoff_latitude', 
     'trip_distance', #feature enginered column
-    'passenger_count',
-    'pickup_datetime_year', #feature enginered column from pickup_datetime
+    # 'passenger_count',
+    # 'pickup_datetime_year', #feature enginered column from pickup_datetime
     # 'pickup_datetime_month', #feature enginered column from pickup_datetime
     # 'pickup_datetime_dayofyear', #feature enginered column from pickup_datetime
     # 'pickup_datetime_dayofweek', #feature enginered column from pickup_datetime
