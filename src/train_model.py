@@ -78,7 +78,9 @@ def main():
     data_path = Path(DATASET_DOWNLOAD_PATH) / "train.csv"
     df = load_data(data_path)
     df = preprocess_data(df)
-    X, y, numeric, boolean, cyclic, categorical = prepare_features(df)
+    df.to_csv(f"data/02_processed/preprocessed_df.csv", index=False)
+    X, y, numeric, boolean, cyclic, categorical, final_df = prepare_features(df)
+    final_df.to_csv(f"data/03_final/final_df.csv", index=False)
     X_train, X_test, y_train, y_test, preprocessor = split_and_preprocess(X, y, numeric, boolean, cyclic, categorical)
 
     train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE,alpha=ALPHA)

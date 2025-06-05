@@ -341,7 +341,8 @@ def prepare_features(df: pd.DataFrame):
         all_features = numeric + boolean + cyclic + categorical
         X = df[all_features]
         y = df[TARGET_FEATURE]
-        return X, y, numeric, boolean, cyclic, categorical
+        final_df = df[SELECTED_COLUMNS]
+        return X, y, numeric, boolean, cyclic, categorical, final_df
     except Exception as e:
         raise RuntimeError(f"Failed to prepare features: {e}")
 
