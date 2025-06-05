@@ -2,7 +2,11 @@ __pycache__/
 -.egg-info/
 credentials/
 discovery/
-data/
+data/01_raw/
+data/02_processed/
+data/feature_importance/
+data/drafts
+data/logs
 mlflow/
 mlruns/
 mlartifact/
