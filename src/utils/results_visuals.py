@@ -24,6 +24,14 @@ def plot_and_save_grouped_bar_mlruns_metrics(experiment_name, metrics=("r2", "ms
         raise ValueError("None of the specified metrics are found in the runs.")
 
     run_names = df['tags.mlflow.runName'].fillna(df['run_id'])
+
+    mask = ~run_names.str.contains("debug", case=False, na=False)
+    df = df[mask]
+    run_names = run_names[mask]
+
+    if df.empty:
+        raise ValueError("No valid runs remaining after filtering out 'debug' runs.")
+
     metric_data = pd.DataFrame(index=run_names)
 
     for metric in available_metrics:
@@ -78,6 +86,14 @@ def plot_and_save_best_models_summary(experiment_name, metrics=("r2", "mse", "rm
     os.makedirs(output_dir, exist_ok=True)
 
     run_names = df['tags.mlflow.runName'].fillna(df['run_id'])
+
+    mask = ~run_names.str.contains("debug", case=False, na=False)
+    df = df[mask]
+    run_names = run_names[mask]
+
+    if df.empty:
+        raise ValueError("No valid runs remaining after filtering out 'debug' runs.")
+
     metric_data = pd.DataFrame(index=run_names)
 
     available_metrics = [metric for metric in metrics if f"metrics.{metric}" in df.columns]
