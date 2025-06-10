@@ -1,4 +1,5 @@
 import os
+import subprocess
 import pandas as pd
 from pathlib import Path
 
@@ -7,6 +8,7 @@ from mlflow.models.signature import infer_signature
 import mlflow.data
 from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.metrics import mean_squared_error, root_mean_squared_error, mean_absolute_error, r2_score
+from src.utils.helpers import get_dvc_md5
 from src.utils.load_dataset import download_kaggle_competition_data
 from src.utils.results_visuals import plot_and_save_grouped_bar_mlruns_metrics, plot_and_save_best_models_summary
 from src.utils.logging_config import logger
@@ -41,15 +43,18 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
         logger.info(f"Logging model parameters and metrics to MLflow...")
         feature_names = preprocessor.get_feature_names_out()
         num_features = len(feature_names)
+
         mlflow.log_param("features", ", ".join(feature_names))
         mlflow.log_param("num_features", num_features)
         mlflow.log_metric("mse", mse)
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("mae", mae)
         mlflow.log_metric("r2", r2)
+
         
-        mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_train), name="X_train"), context="training")
-        mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_test), name="X_test"), context="validation")
+        # mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_train), name="X_train"), context="training")
+        # mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_test), name="X_test"), context="validation")
+        mlflow.log_param("Final_dataset_version_md5", get_dvc_md5("data/03_final/final_df.csv.dvc"))
 
         if model_type == 'Lasso':
             mlflow.log_param("alpha", alpha)
@@ -81,11 +86,12 @@ def main():
     df.to_csv(f"data/02_processed/preprocessed_df.csv", index=False)
     X, y, numeric, boolean, cyclic, categorical, final_df = prepare_features(df)
     final_df.to_csv(f"data/03_final/final_df.csv", index=False)
+    subprocess.run(["dvc", "add", "data/03_final/final_df.csv"], check=True)
     X_train, X_test, y_train, y_test, preprocessor = split_and_preprocess(X, y, numeric, boolean, cyclic, categorical)
 
     train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE,alpha=ALPHA)
 
-    plot_and_save_grouped_bar_mlruns_metrics(experiment_name=EXPERIMENT_NAME)
-    plot_and_save_best_models_summary(experiment_name=EXPERIMENT_NAME)
+    # plot_and_save_grouped_bar_mlruns_metrics(experiment_name=EXPERIMENT_NAME)
+    # plot_and_save_best_models_summary(experiment_name=EXPERIMENT_NAME)
 if __name__ == "__main__":
     main()
