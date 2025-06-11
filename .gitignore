@@ -9,6 +9,7 @@ data/drafts
 data/logs
 mlflow/
 mlruns/
+models/
 mlartifact/
 .env
 .credentials/

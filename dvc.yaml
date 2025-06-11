@@ -1,0 +1,41 @@
+stages:
+  load_data:
+    cmd: python src/load_data.py
+    deps:
+      - src/load_data.py
+    outs:
+      - data/01_raw/train.csv
+    params:
+      - paths.dataset_download_path
+      - paths.raw_dataset_path
+
+
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+      - src/preprocess.py
+      - data/01_raw/train.csv
+    outs:
+      - data/02_preprocessed/preprocessed_df.csv
+    params:
+      - features
+      - paths.raw_dataset_path
+      - paths.preprocessed_dataset_path
+
+  train:
+    cmd: python src/train_model.py
+    deps:
+      - src/train_model.py
+      - data/02_preprocessed/preprocessed_df.csv
+      - params.yaml
+    outs:
+      - models/model.pkl
+    params:
+      - model
+      - features
+      - target_feature
+      - paths.preprocessed_dataset_path
+      - paths.final_dataset_path
+      - experiment.name
+      - version
+

@@ -1,0 +1,41 @@
+version: "v4_debug"
+model:
+  type: "Lasso"          # 'LinearRegression' or 'Lasso'
+  alpha: 0.01            # For Lasso regression
+
+features:
+  numeric:
+    - pickup_longitude
+    - pickup_latitude
+    - dropoff_longitude
+    - dropoff_latitude
+    - trip_distance
+    - passenger_count
+    - pickup_datetime_year
+  boolean:
+    - pickup_datetime_is_weekend
+    - pickup_datetime_is_late_night
+    - pickup_datetime_is_night
+    - pickup_datetime_is_early_morning
+    - pickup_datetime_is_rush_hour
+  cyclic:
+    - hour_sin
+    - hour_cos
+    - dow_sin
+    - dow_cos
+    - month_sin
+    - month_cos
+    - doy_sin
+    - doy_cos
+  categorical: []
+
+target_feature: fare_amount
+
+paths:
+  dataset_download_path: "data/01_raw"
+  raw_dataset_path: "data/01_raw/train.csv"
+  preprocessed_dataset_path: "data/02_preprocessed/preprocessed_df.csv"
+  final_dataset_path: "data/03_final/final_df.csv"
+
+experiment:
+  name: "NYC_Taxi_Fare_Pred"

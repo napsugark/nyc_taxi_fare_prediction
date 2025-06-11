@@ -1,6 +1,6 @@
+import joblib
 import pandas as pd
 from pathlib import Path
-import subprocess
 
 import mlflow
 from mlflow.models.signature import infer_signature
@@ -68,6 +68,11 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
             signature=signature,
             input_example=input_example
         )
+        model_path = Path("models/model.pkl")
+        model_path.parent.mkdir(parents=True, exist_ok=True)  
+        joblib.dump(model, model_path)
+        logger.info(f"Model saved to {model_path}")
+
         logger.info("Model logged successfully.")
 
 def main():
@@ -76,7 +81,6 @@ def main():
     X, y, numeric, boolean, cyclic, categorical, final_df = prepare_features(df)
 
     save_data(final_df, Path(FINAL_DATASET_PATH))
-    subprocess.run(["dvc", "add", str(FINAL_DATASET_PATH)], check=True)
 
     X_train, X_test, y_train, y_test = split_data(X, y)
    

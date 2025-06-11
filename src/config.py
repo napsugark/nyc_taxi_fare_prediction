@@ -1,61 +1,27 @@
-VERSION = "v4_debug"
-MODEL_TYPE = "Lasso" # 'LinearRegression' or 'Lasso'
-ALPHA = 0.01 # for lasso regression
+import yaml
 
-#ORIGINAL COLUMNS
-# 'key', 'fare_amount', 'pickup_datetime', 'pickup_longitude', 'pickup_latitude','dropoff_longitude', 'dropoff_latitude', 'passenger_count'
+with open("params.yaml", "r") as f:
+    params = yaml.safe_load(f)
 
-NUMERIC_FEATURES = [
-    'pickup_longitude', 
-    'pickup_latitude', 
-    'dropoff_longitude',
-    'dropoff_latitude', 
-    'trip_distance', #feature enginered column
-    # 'passenger_count',
-    # 'pickup_datetime_year', #feature enginered column from pickup_datetime
-    # 'pickup_datetime_month', #feature enginered column from pickup_datetime
-    # 'pickup_datetime_dayofyear', #feature enginered column from pickup_datetime
-    # 'pickup_datetime_dayofweek', #feature enginered column from pickup_datetime
-    # 'pickup_datetime_hour', #feature enginered column from pickup_datetime
-]
+VERSION = params["version"]
+MODEL_TYPE = params["model"]["type"]
+ALPHA = params["model"]["alpha"]
 
-BOOLEAN_FEATURES = [
-    'pickup_datetime_is_weekend', #feature enginered column
-    'pickup_datetime_is_late_night', #feature enginered column
-    'pickup_datetime_is_night',#feature enginered column
-    'pickup_datetime_is_early_morning', #feature enginered column
-    'pickup_datetime_is_rush_hour'#feature enginered column
-]
+# Features
+NUMERIC_FEATURES = params["features"]["numeric"]
+BOOLEAN_FEATURES = params["features"]["boolean"]
+CYCLIC_FEATURES = params["features"]["cyclic"]
+CATEGORICAL_FEATURES = params["features"]["categorical"]
 
-CYCLIC_FEATURES = [
-    'hour_sin', #feature enginered column
-    'hour_cos', #feature enginered column
-    'dow_sin', #feature enginered column
-    'dow_cos', #feature enginered column
-    'month_sin', #feature enginered column
-    'month_cos', #feature enginered column
-    'doy_sin', #feature enginered column
-    'doy_cos'#feature enginered column
-]
+TARGET_FEATURE = params["target_feature"]
 
-CATEGORICAL_FEATURES = []
+SELECTED_COLUMNS = NUMERIC_FEATURES + BOOLEAN_FEATURES + CYCLIC_FEATURES + CATEGORICAL_FEATURES + [TARGET_FEATURE]
 
-TARGET_FEATURE = 'fare_amount'
+# Paths
+DATASET_DOWNLOAD_PATH = params["paths"]["dataset_download_path"]
+RAW_DATASET_PATH = params["paths"]["raw_dataset_path"]
+PREPROCESSED_DATASET_PATH = params["paths"]["preprocessed_dataset_path"]
+FINAL_DATASET_PATH = params["paths"]["final_dataset_path"]
 
-# #v1
-# SELECTED_COLUMNS = NUMERIC_FEATURES + [TARGET_FEATURE]
-
-# #v2 with feature trip_distance
-# SELECTED_COLUMNS = NUMERIC_FEATURES + [TARGET_FEATURE]
-
-# #v3 with feature trip_distance
-# SELECTED_COLUMNS = NUMERIC_FEATURES + CYCLIC_FEATURES + [TARGET_FEATURE]
-
-#v4
-SELECTED_COLUMNS = NUMERIC_FEATURES + BOOLEAN_FEATURES + CATEGORICAL_FEATURES + CYCLIC_FEATURES + [TARGET_FEATURE]
-
-DATASET_DOWNLOAD_PATH = "data/01_raw"
-RAW_DATASET_PATH = "data/01_raw/train.csv"
-PREPROCESSED_DATASET_PATH = "data/02_preprocessed/preprocessed_df.csv"
-FINAL_DATASET_PATH = "data/03_final/final_df.csv"
-EXPERIMENT_NAME = "NYC_Taxi_Fare_Pred"
+# Experiment
+EXPERIMENT_NAME = params["experiment"]["name"]
