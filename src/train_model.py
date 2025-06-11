@@ -1,18 +1,13 @@
-import os
-import subprocess
 import pandas as pd
 from pathlib import Path
+import subprocess
 
 import mlflow
 from mlflow.models.signature import infer_signature
-import mlflow.data
 from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.metrics import mean_squared_error, root_mean_squared_error, mean_absolute_error, r2_score
-from src import preprocess
 from src.utils.helpers import get_dvc_md5, save_data
-from src.visualize_results import plot_and_save_grouped_bar_mlruns_metrics, plot_and_save_best_models_summary
 from src.utils.logging_config import logger
-from datetime import datetime
 
 
 from src.config import DATASET_DOWNLOAD_PATH, FINAL_DATASET_PATH, PREPROCESSED_DATASET_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
@@ -91,7 +86,5 @@ def main():
 
     train_and_log_model(X_train_prep, X_test_prep, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE,alpha=ALPHA)
 
-    # plot_and_save_grouped_bar_mlruns_metrics(experiment_name=EXPERIMENT_NAME)
-    # plot_and_save_best_models_summary(experiment_name=EXPERIMENT_NAME)
 if __name__ == "__main__":
     main()
