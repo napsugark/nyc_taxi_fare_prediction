@@ -4,6 +4,7 @@ from pathlib import Path
 from kaggle.api.kaggle_api_extended import KaggleApi
 from kaggle import api
 from dotenv import load_dotenv
+from src.config import DATASET_DOWNLOAD_PATH
 from src.utils.logging_config import logger
 
 
@@ -59,3 +60,12 @@ def download_kaggle_competition_data(competition_name: str, dataset_download_pat
     except Exception as e:
         logger.error(f"An error occurred while downloading or extracting the dataset: {e}")
         raise
+
+
+def main():
+    logger.info("Loading data...")
+    download_kaggle_competition_data(competition_name="new-york-city-taxi-fare-prediction", dataset_download_path=DATASET_DOWNLOAD_PATH)
+
+if __name__ == "__main__":
+    main()
+    logger.info("Loading data completed successfully.")

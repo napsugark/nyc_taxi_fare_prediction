@@ -8,15 +8,15 @@ from mlflow.models.signature import infer_signature
 import mlflow.data
 from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.metrics import mean_squared_error, root_mean_squared_error, mean_absolute_error, r2_score
-from src.utils.helpers import get_dvc_md5
-from src.utils.load_dataset import download_kaggle_competition_data
-from src.utils.results_visuals import plot_and_save_grouped_bar_mlruns_metrics, plot_and_save_best_models_summary
+from src import preprocess
+from src.utils.helpers import get_dvc_md5, save_data
+from src.visualize_results import plot_and_save_grouped_bar_mlruns_metrics, plot_and_save_best_models_summary
 from src.utils.logging_config import logger
 from datetime import datetime
 
 
-from src.constants import DATASET_DOWNLOAD_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
-from src.preprocessing import load_data, prepare_features, preprocess_data, split_and_preprocess
+from src.config import DATASET_DOWNLOAD_PATH, FINAL_DATASET_PATH, PREPROCESSED_DATASET_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
+from src.preprocess import load_data, prepare_features, preprocess_columns,  split_data
 
 def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE, alpha=ALPHA):
     if model_type == 'Lasso':
@@ -50,10 +50,7 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("mae", mae)
         mlflow.log_metric("r2", r2)
-
         
-        # mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_train), name="X_train"), context="training")
-        # mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_test), name="X_test"), context="validation")
         mlflow.log_param("Final_dataset_version_md5", get_dvc_md5("data/03_final/final_df.csv.dvc"))
 
         if model_type == 'Lasso':
@@ -80,16 +77,19 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
 
 def main():
     logger.info("Starting the training process...")
-    data_path = Path(DATASET_DOWNLOAD_PATH) / "train.csv"
-    df = load_data(data_path)
-    df = preprocess_data(df)
-    df.to_csv(f"data/02_processed/preprocessed_df.csv", index=False)
+    df = load_data(PREPROCESSED_DATASET_PATH)
     X, y, numeric, boolean, cyclic, categorical, final_df = prepare_features(df)
-    final_df.to_csv(f"data/03_final/final_df.csv", index=False)
-    subprocess.run(["dvc", "add", "data/03_final/final_df.csv"], check=True)
-    X_train, X_test, y_train, y_test, preprocessor = split_and_preprocess(X, y, numeric, boolean, cyclic, categorical)
 
-    train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE,alpha=ALPHA)
+    save_data(final_df, Path(FINAL_DATASET_PATH))
+    subprocess.run(["dvc", "add", str(FINAL_DATASET_PATH)], check=True)
+
+    X_train, X_test, y_train, y_test = split_data(X, y)
+   
+    X_train_prep, X_test_prep, preprocessor = preprocess_columns(
+        X_train, X_test, numeric, boolean, cyclic, categorical
+    )
+
+    train_and_log_model(X_train_prep, X_test_prep, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE,alpha=ALPHA)
 
     # plot_and_save_grouped_bar_mlruns_metrics(experiment_name=EXPERIMENT_NAME)
     # plot_and_save_best_models_summary(experiment_name=EXPERIMENT_NAME)

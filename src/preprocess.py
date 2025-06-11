@@ -1,20 +1,19 @@
 import numpy as np
 import pandas as pd
 from pathlib import Path
-
+from pandas import DataFrame
+from typing import Optional, Union, List
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-
-from src.constants import SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE, DATASET_DOWNLOAD_PATH
-
-import pandas as pd
-from pandas import DataFrame
-from src.utils.load_dataset import download_kaggle_competition_data
+from src.utils.helpers import save_data
 from src.utils.logging_config import logger
+from src.config import PREPROCESSED_DATASET_PATH, RAW_DATASET_PATH, SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE
 
 
-def load_data(file_path: Path) -> pd.DataFrame:
+
+
+def load_data(file_path: Path, parse_dates: Optional[Union[List[str], str]] = None) -> pd.DataFrame:
     """
     Loads the dataset from a CSV file.
     Args:
@@ -27,9 +26,11 @@ def load_data(file_path: Path) -> pd.DataFrame:
     """
     try:
         logger.info(f"Checking if file {file_path} exists...")
-        download_kaggle_competition_data(competition_name="new-york-city-taxi-fare-prediction", dataset_download_path=DATASET_DOWNLOAD_PATH)
         logger.info(f"Loading data from {file_path}")
-        df = pd.read_csv(file_path, parse_dates=['pickup_datetime'])
+        if parse_dates:
+            df = pd.read_csv(file_path, parse_dates=parse_dates)
+        else:
+            df = pd.read_csv(file_path)
         logger.info(f"Data loaded successfully with shape {df.shape}")
         return df
     except FileNotFoundError as e:
@@ -346,6 +347,33 @@ def prepare_features(df: pd.DataFrame):
     except Exception as e:
         raise RuntimeError(f"Failed to prepare features: {e}")
 
+def split_data(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2, random_state: int = 42):
+    """Splits the dataset into training and testing sets."""
+    logger.info("Splitting dataset into train and test sets...")
+    try:
+        return train_test_split(X, y, test_size=test_size, random_state=random_state)
+    except Exception as e:
+        raise RuntimeError(f"Failed to split data: {e}")
+
+def preprocess_columns(
+    X_train: pd.DataFrame, 
+    X_test: pd.DataFrame, 
+    numeric: list[str], 
+    boolean: list[str], 
+    cyclic: list[str], 
+    categorical: list[str]
+):
+    """Applies preprocessing pipeline to train and test data."""
+    logger.info("Preprocessing training and test features...")
+    try:
+        preprocessor = build_preprocessor(numeric, boolean, cyclic, categorical)
+        X_train_prep = preprocessor.fit_transform(X_train)
+        X_test_prep = preprocessor.transform(X_test)
+        return X_train_prep, X_test_prep, preprocessor
+    except Exception as e:
+        raise RuntimeError(f"Failed to preprocess data: {e}")
+
+
 def split_and_preprocess(X, y, numeric, boolean, cyclic, categorical, test_size=0.2, random_state=42):
     """
     Splits the dataset into training and testing sets, applies preprocessing, and returns the processed data.
@@ -379,6 +407,8 @@ def split_and_preprocess(X, y, numeric, boolean, cyclic, categorical, test_size=
     except Exception as e:
         raise RuntimeError(f"Failed to split and preprocess data: {e}")
     
+
+    
 def select_columns(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     """
     Selects specific columns from a DataFrame.
@@ -400,3 +430,16 @@ def select_columns(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
         raise KeyError(f"Column not found in DataFrame: {e}")
     except Exception as e:
         raise RuntimeError(f"Failed to select columns: {e}")
+
+
+
+def main():
+    logger.info("Starting the preprocessing process...")
+    df = load_data(RAW_DATASET_PATH, parse_dates=['pickup_datetime'])
+    df = preprocess_data(df)
+    save_data(df, Path(PREPROCESSED_DATASET_PATH))
+    logger.info(f"Preprocessed data saved to {PREPROCESSED_DATASET_PATH}")
+    logger.info("Preprocessing completed successfully.")
+
+if __name__ == "__main__":
+    main()

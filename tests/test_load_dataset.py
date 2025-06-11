@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils.load_dataset import download_kaggle_competition_data
+from src.load_data import download_kaggle_competition_data
 
 
 def test_download_kaggle_competition_data(mocker):

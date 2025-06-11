@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import mlflow
+from src.config import EXPERIMENT_NAME
 from src.utils.logging_config import logger
 
 
@@ -133,3 +134,15 @@ def plot_and_save_best_models_summary(experiment_name, metrics=("r2", "mse", "rm
     plt.savefig(summary_path, format="jpg", dpi=300)
     plt.close()
     logger.info(f"Saved best models summary to {summary_path}")
+
+def main():
+    logger.info("Plotting and saving grouped bar chart of metrics...")
+    plot_and_save_grouped_bar_mlruns_metrics(experiment_name=EXPERIMENT_NAME)
+
+    logger.info("Plotting and saving best models summary...")
+    plot_and_save_best_models_summary(experiment_name=EXPERIMENT_NAME)
+    logger.info("All plots saved successfully.")
+
+if __name__ == "__main__":
+    main()
+    logger.info("Visualization of results completed successfully.")

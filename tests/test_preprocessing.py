@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from src.preprocessing import split_date_cols, calculate_haversine, add_cyclic_features
+from src.preprocess import split_date_cols, calculate_haversine, add_cyclic_features
 from math import isclose
 
 def test_split_date_cols_basic(df_timestamps):
