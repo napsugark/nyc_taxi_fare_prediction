@@ -1,0 +1,118 @@
+schema: '2.0'
+stages:
+  load_data:
+    cmd: python src/load_data.py
+    deps:
+    - path: src/load_data.py
+      hash: md5
+      md5: 5e2f08a54f7500a4e685383fdd0e629f
+      size: 2801
+    params:
+      params.yaml:
+        paths.dataset_download_path: data/01_raw
+        paths.raw_dataset_path: data/01_raw/train.csv
+    outs:
+    - path: data/01_raw/train.csv
+      hash: md5
+      md5: 75df8d0b86390d89bdd398c032b38653
+      size: 5697178298
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/01_raw/train.csv
+      hash: md5
+      md5: 75df8d0b86390d89bdd398c032b38653
+      size: 5697178298
+    - path: src/preprocess.py
+      hash: md5
+      md5: 036d7ec7069172f121d2ec686369d18d
+      size: 18765
+    params:
+      params.yaml:
+        features:
+          numeric:
+          - pickup_longitude
+          - pickup_latitude
+          - dropoff_longitude
+          - dropoff_latitude
+          - trip_distance
+          - passenger_count
+          - pickup_datetime_year
+          boolean:
+          - pickup_datetime_is_weekend
+          - pickup_datetime_is_late_night
+          - pickup_datetime_is_night
+          - pickup_datetime_is_early_morning
+          - pickup_datetime_is_rush_hour
+          cyclic:
+          - hour_sin
+          - hour_cos
+          - dow_sin
+          - dow_cos
+          - month_sin
+          - month_cos
+          - doy_sin
+          - doy_cos
+          categorical: []
+        paths.preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
+        paths.raw_dataset_path: data/01_raw/train.csv
+    outs:
+    - path: data/02_preprocessed/preprocessed_df.csv
+      hash: md5
+      md5: b57946ab9646deccc1b70adbcf5e18c0
+      size: 4976017503
+  train:
+    cmd: python src/train_model.py
+    deps:
+    - path: data/02_preprocessed/preprocessed_df.csv
+      hash: md5
+      md5: b57946ab9646deccc1b70adbcf5e18c0
+      size: 4976017503
+    - path: params.yaml
+      hash: md5
+      md5: 073034c6930733beedd665da17a094f9
+      size: 972
+    - path: src/train_model.py
+      hash: md5
+      md5: be6c26bd1315e3a17a3c0bb721bf27c2
+      size: 4099
+    params:
+      params.yaml:
+        experiment.name: NYC_Taxi_Fare_Pred
+        features:
+          numeric:
+          - pickup_longitude
+          - pickup_latitude
+          - dropoff_longitude
+          - dropoff_latitude
+          - trip_distance
+          - passenger_count
+          - pickup_datetime_year
+          boolean:
+          - pickup_datetime_is_weekend
+          - pickup_datetime_is_late_night
+          - pickup_datetime_is_night
+          - pickup_datetime_is_early_morning
+          - pickup_datetime_is_rush_hour
+          cyclic:
+          - hour_sin
+          - hour_cos
+          - dow_sin
+          - dow_cos
+          - month_sin
+          - month_cos
+          - doy_sin
+          - doy_cos
+          categorical: []
+        model:
+          type: Lasso
+          alpha: 0.01
+        paths.final_dataset_path: data/03_final/final_df.csv
+        paths.preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
+        target_feature: fare_amount
+        version: v4_debug
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: 4b30b034fbfe5109580ec85392fa5a21
+      size: 792
