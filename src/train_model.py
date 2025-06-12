@@ -69,8 +69,14 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
             input_example=input_example
         )
         model_path = Path("models/model.pkl")
-        model_path.parent.mkdir(parents=True, exist_ok=True)  
+        model_path.parent.mkdir(parents=True, exist_ok=True)
+        preprocessor_path = Path("models/preprocessor.pkl")
+        preprocessor_path.parent.mkdir(parents=True, exist_ok=True)
         joblib.dump(model, model_path)
+        joblib.dump(preprocessor, preprocessor_path)
+        mlflow.log_artifact(str(model_path))
+        mlflow.log_artifact(str(preprocessor_path))
+        logger.info(f"Preprocessor saved to {preprocessor_path}")
         logger.info(f"Model saved to {model_path}")
 
         logger.info("Model logged successfully.")
