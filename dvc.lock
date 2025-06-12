@@ -35,9 +35,6 @@ stages:
           - pickup_latitude
           - dropoff_longitude
           - dropoff_latitude
-          - trip_distance
-          - passenger_count
-          - pickup_datetime_year
           boolean:
           - pickup_datetime_is_weekend
           - pickup_datetime_is_late_night
@@ -59,23 +56,23 @@ stages:
     outs:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: b57946ab9646deccc1b70adbcf5e18c0
-      size: 4976017503
+      md5: cd6dbb6f30d3b022dede3b3d19d05809
+      size: 4475297299
   train:
     cmd: python src/train_model.py
     deps:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: b57946ab9646deccc1b70adbcf5e18c0
-      size: 4976017503
+      md5: cd6dbb6f30d3b022dede3b3d19d05809
+      size: 4475297299
     - path: params.yaml
       hash: md5
-      md5: 073034c6930733beedd665da17a094f9
-      size: 972
+      md5: dcdeb42ad65a7a9a992556b7f180aae6
+      size: 978
     - path: src/train_model.py
       hash: md5
-      md5: be6c26bd1315e3a17a3c0bb721bf27c2
-      size: 4099
+      md5: 0ad389ed0a8e60eb80a369e1bf721598
+      size: 4353
     params:
       params.yaml:
         experiment.name: NYC_Taxi_Fare_Pred
@@ -85,9 +82,6 @@ stages:
           - pickup_latitude
           - dropoff_longitude
           - dropoff_latitude
-          - trip_distance
-          - passenger_count
-          - pickup_datetime_year
           boolean:
           - pickup_datetime_is_weekend
           - pickup_datetime_is_late_night
@@ -114,5 +108,5 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 4b30b034fbfe5109580ec85392fa5a21
-      size: 792
+      md5: a1c936e30837cc260781cb62eaf2c104
+      size: 768

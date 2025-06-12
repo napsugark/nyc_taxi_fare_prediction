@@ -9,9 +9,9 @@ features:
     - pickup_latitude
     - dropoff_longitude
     - dropoff_latitude
-    - trip_distance
-    - passenger_count
-    - pickup_datetime_year
+    # - trip_distance
+    # - passenger_count
+    # - pickup_datetime_year
   boolean:
     - pickup_datetime_is_weekend
     - pickup_datetime_is_late_night
