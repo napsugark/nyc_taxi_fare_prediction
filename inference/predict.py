@@ -6,6 +6,7 @@ import joblib
 import pandas as pd
 import traceback
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 from inference.prepare_features import prepare_features_for_prediction
 
@@ -15,6 +16,13 @@ model = joblib.load("models/model.pkl")
 
 app = FastAPI(title="Model Prediction API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PredictionInput(BaseModel):
     pickup_datetime: datetime = Field(..., description="UTC datetime of pickup")
@@ -57,3 +65,7 @@ def predict(input_data: PredictionInput):
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/health")
+def health():
+    return {"status": "ok"}

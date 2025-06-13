@@ -9,7 +9,9 @@ data/drafts
 data/logs
 mlflow/
 mlruns/
-models/
+models/*.pkl
+!models/model.pkl
+!models/preprocessor.pkl
 mlartifact/
 .env
 .credentials/
