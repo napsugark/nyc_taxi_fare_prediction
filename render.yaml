@@ -2,7 +2,6 @@ services:
   - type: web
     name: taxifare-inference-api
     env: python
-    pythonVersion: 3.10
     rootDir: inference
     buildCommand: |
       pip install numpy
