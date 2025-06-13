@@ -10,8 +10,8 @@ from src.utils.helpers import get_dvc_md5, save_data
 from src.utils.logging_config import logger
 
 
-from src.config import DATASET_DOWNLOAD_PATH, FINAL_DATASET_PATH, PREPROCESSED_DATASET_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
-from src.preprocess import load_data, prepare_features, preprocess_columns,  split_data
+from src.nyc_tfp.config import DATASET_DOWNLOAD_PATH, FINAL_DATASET_PATH, PREPROCESSED_DATASET_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
+from src.nyc_tfp.preprocess import load_data, prepare_features, preprocess_columns,  split_data
 
 def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE, alpha=ALPHA):
     if model_type == 'Lasso':

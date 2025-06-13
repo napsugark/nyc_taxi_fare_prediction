@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.utils.helpers import save_data
 from src.utils.logging_config import logger
-from src.config import PREPROCESSED_DATASET_PATH, RAW_DATASET_PATH, SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE
+from src.nyc_tfp.config import PREPROCESSED_DATASET_PATH, RAW_DATASET_PATH, SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE
 
 
 

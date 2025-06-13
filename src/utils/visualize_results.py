@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import mlflow
-from src.config import EXPERIMENT_NAME
+from src.nyc_tfp.config import EXPERIMENT_NAME
 from src.utils.logging_config import logger
 
 

@@ -7,10 +7,10 @@ import pandas as pd
 import uuid
 from pathlib import Path
 import shutil
-from src.config import DATASET_DOWNLOAD_PATH, EXPERIMENT_NAME, VERSION, MODEL_TYPE, ALPHA
+from src.nyc_tfp.config import DATASET_DOWNLOAD_PATH, EXPERIMENT_NAME, VERSION, MODEL_TYPE, ALPHA
 from src.utils.logging_config import logger
-from src.train_model import train_and_log_model
-from src.preprocess import load_data, preprocess_data, prepare_features, split_and_preprocess
+from src.nyc_tfp.train_model import train_and_log_model
+from src.nyc_tfp.preprocess import load_data, preprocess_data, prepare_features, split_and_preprocess
 
 
 

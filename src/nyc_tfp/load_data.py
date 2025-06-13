@@ -4,7 +4,7 @@ from pathlib import Path
 from kaggle.api.kaggle_api_extended import KaggleApi
 from kaggle import api
 from dotenv import load_dotenv
-from src.config import DATASET_DOWNLOAD_PATH
+from src.nyc_tfp.config import DATASET_DOWNLOAD_PATH
 from src.utils.logging_config import logger
 
 

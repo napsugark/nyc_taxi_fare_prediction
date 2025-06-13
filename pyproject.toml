@@ -1,11 +1,13 @@
 [project]
-name = "nyc-tfp"
+name = "nyc_tfp"
 version = "0.1.0"
+packages = [
+  { include = "nyc_tfp", from = "src" }
+]
 description = ""
 authors = [
     {name = "Napsugar Kelemen",email = "napsugar.kelemen@qubiz.com"}
 ]
-package-mode = false
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["pandas (>=2.2.3,<3.0.0)",

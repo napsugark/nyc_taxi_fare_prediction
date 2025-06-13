@@ -1,6 +1,6 @@
 import pandas as pd
-from src.config import PREDICTION_COLUMNS
-from src.preprocess import (
+from src.nyc_tfp.config import PREDICTION_COLUMNS
+from src.nyc_tfp.preprocess import (
     add_cyclic_features,
     add_haversine,
     select_columns,
