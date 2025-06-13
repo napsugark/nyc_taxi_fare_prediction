@@ -3,11 +3,11 @@ services:
     name: taxifare-inference-api
     env: python
     pythonVersion: 3.10
+    rootDir: inference
     buildCommand: |
       pip install numpy
-      cd ..
       poetry export --without-hashes -f requirements.txt -o requirements.txt
       pip install -r requirements.txt
     startCommand: uvicorn inference.predict_using_address:app --host 0.0.0.0 --port 10000
     plan: free
-    rootDir: inference
+
