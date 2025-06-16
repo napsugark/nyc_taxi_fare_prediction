@@ -10,8 +10,6 @@ data/logs
 mlflow/
 mlruns/
 models/*.pkl
-!models/model.pkl
-!models/preprocessor.pkl
 mlartifact/
 .env
 .credentials/
