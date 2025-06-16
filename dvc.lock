@@ -35,6 +35,7 @@ stages:
           - pickup_latitude
           - dropoff_longitude
           - dropoff_latitude
+          - trip_distance
           - passenger_count
           - pickup_datetime_year
           boolean:
@@ -43,34 +44,26 @@ stages:
           - pickup_datetime_is_night
           - pickup_datetime_is_early_morning
           - pickup_datetime_is_rush_hour
-          cyclic:
-          - hour_sin
-          - hour_cos
-          - dow_sin
-          - dow_cos
-          - month_sin
-          - month_cos
-          - doy_sin
-          - doy_cos
+          cyclic: []
           categorical: []
         paths.preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
         paths.raw_dataset_path: data/01_raw/train.csv
     outs:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: cc36657cdec8c5b00c5ad410d4b225ea
-      size: 4612546791
+      md5: cbb4a1e9df54299dc30adaa4fc54c576
+      size: 2109341151
   train:
     cmd: python -m src.nyc_tfp.train_model
     deps:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: cc36657cdec8c5b00c5ad410d4b225ea
-      size: 4612546791
+      md5: cbb4a1e9df54299dc30adaa4fc54c576
+      size: 2109341151
     - path: params.yaml
       hash: md5
-      md5: 168ef4c722c011f42581ecb368b51890
-      size: 992
+      md5: c84007327d35cde369dac94422538bee
+      size: 1006
     - path: src/nyc_tfp/train_model.py
       hash: md5
       md5: 2f18379df3c41158b3a050ed3c429dad
@@ -84,6 +77,7 @@ stages:
           - pickup_latitude
           - dropoff_longitude
           - dropoff_latitude
+          - trip_distance
           - passenger_count
           - pickup_datetime_year
           boolean:
@@ -92,15 +86,7 @@ stages:
           - pickup_datetime_is_night
           - pickup_datetime_is_early_morning
           - pickup_datetime_is_rush_hour
-          cyclic:
-          - hour_sin
-          - hour_cos
-          - dow_sin
-          - dow_cos
-          - month_sin
-          - month_cos
-          - doy_sin
-          - doy_cos
+          cyclic: []
           categorical: []
         model:
           type: Lasso
@@ -112,5 +98,5 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 4b31b2473797b6b691a0ac24db1d7171
-      size: 784
+      md5: 91cc084596391cb82f6c7b46b45c37d4
+      size: 728
