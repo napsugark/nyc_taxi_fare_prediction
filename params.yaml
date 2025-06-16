@@ -18,17 +18,17 @@ features:
     - pickup_datetime_is_night
     - pickup_datetime_is_early_morning
     - pickup_datetime_is_rush_hour
-  # cyclic:
-  #   - hour_sin
-  #   - hour_cos
-  #   - dow_sin
-  #   - dow_cos
-  #   - month_sin
-  #   - month_cos
-  #   - doy_sin
-  #   - doy_cos
+  cyclic:
+    - hour_sin
+    - hour_cos
+    - dow_sin
+    - dow_cos
+    - month_sin
+    - month_cos
+    - doy_sin
+    - doy_cos
 
-  cyclic: []
+  # cyclic: []
   categorical: []
 
 target_feature: fare_amount

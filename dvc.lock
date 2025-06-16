@@ -44,26 +44,34 @@ stages:
           - pickup_datetime_is_night
           - pickup_datetime_is_early_morning
           - pickup_datetime_is_rush_hour
-          cyclic: []
+          cyclic:
+          - hour_sin
+          - hour_cos
+          - dow_sin
+          - dow_cos
+          - month_sin
+          - month_cos
+          - doy_sin
+          - doy_cos
           categorical: []
         paths.preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
         paths.raw_dataset_path: data/01_raw/train.csv
     outs:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: cbb4a1e9df54299dc30adaa4fc54c576
-      size: 2109341151
+      md5: b57946ab9646deccc1b70adbcf5e18c0
+      size: 4976017503
   train:
     cmd: python -m src.nyc_tfp.train_model
     deps:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: cbb4a1e9df54299dc30adaa4fc54c576
-      size: 2109341151
+      md5: b57946ab9646deccc1b70adbcf5e18c0
+      size: 4976017503
     - path: params.yaml
       hash: md5
-      md5: c84007327d35cde369dac94422538bee
-      size: 1006
+      md5: e9479786630fdab974c1e94a07fe3ea2
+      size: 990
     - path: src/nyc_tfp/train_model.py
       hash: md5
       md5: 2f18379df3c41158b3a050ed3c429dad
@@ -86,7 +94,15 @@ stages:
           - pickup_datetime_is_night
           - pickup_datetime_is_early_morning
           - pickup_datetime_is_rush_hour
-          cyclic: []
+          cyclic:
+          - hour_sin
+          - hour_cos
+          - dow_sin
+          - dow_cos
+          - month_sin
+          - month_cos
+          - doy_sin
+          - doy_cos
           categorical: []
         model:
           type: Lasso
@@ -98,5 +114,5 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 91cc084596391cb82f6c7b46b45c37d4
-      size: 728
+      md5: 4b30b034fbfe5109580ec85392fa5a21
+      size: 792
