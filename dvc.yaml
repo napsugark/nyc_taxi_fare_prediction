@@ -1,8 +1,8 @@
 stages:
   load_data:
-    cmd: python src/load_data.py
+    cmd: python -m src.nyc_tfp.load_data
     deps:
-      - src/load_data.py
+      - src/nyc_tfp/load_data.py
     outs:
       - data/01_raw/train.csv
     params:
@@ -11,9 +11,9 @@ stages:
 
 
   preprocess:
-    cmd: python src/preprocess.py
+    cmd: python -m src.nyc_tfp.preprocess
     deps:
-      - src/preprocess.py
+      - src/nyc_tfp/preprocess.py
       - data/01_raw/train.csv
     outs:
       - data/02_preprocessed/preprocessed_df.csv
@@ -23,9 +23,9 @@ stages:
       - paths.preprocessed_dataset_path
 
   train:
-    cmd: python src/train_model.py
+    cmd: python -m src.nyc_tfp.train_model
     deps:
-      - src/train_model.py
+      - src/nyc_tfp/train_model.py
       - data/02_preprocessed/preprocessed_df.csv
       - params.yaml
     outs:
