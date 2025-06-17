@@ -8,29 +8,28 @@ import traceback
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+import io
+from contextlib import asynccontextmanager
 
 from inference.prepare_features import prepare_features_for_prediction
 
-# # Load model and preprocessor once at startup
-# preprocessor = joblib.load("models/preprocessor.pkl")
-# model = joblib.load("models/model.pkl")
-
-app = FastAPI(title="Model Prediction API")
-
-MODEL_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction.s3/raw/main/models/model.pkl"
-PREPROCESSOR_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction.s3/raw/main/models/preprocessor.pkl"
+MODEL_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction/raw/main/models/model.pkl"
+PREPROCESSOR_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction/raw/main/models/preprocessor.pkl"
 
 def load_joblib_from_url(url: str):
     response = requests.get(url)
     response.raise_for_status()
-    # Load directly from bytes buffer
     return joblib.load(io.BytesIO(response.content))
 
-@app.on_event("startup")
-def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     global model, preprocessor
     model = load_joblib_from_url(MODEL_URL)
     preprocessor = load_joblib_from_url(PREPROCESSOR_URL)
+    yield
+    # Optional: code to run on shutdown
+
+app = FastAPI(title="Model Prediction API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -58,7 +57,6 @@ class PredictionInput(BaseModel):
 
 class PredictionResponse(BaseModel):
     prediction: List[float]
-
 
 def geocode_address(address: str):
     url = "https://nominatim.openstreetmap.org/search"
@@ -97,7 +95,6 @@ def predict(input_data: PredictionInput):
             print(f"Dropoff coordinates: {dropoff_lat}, {dropoff_lon}")
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Dropoff address error: {str(e)}")
-
 
         # Build dataframe for prediction
         input_df = pd.DataFrame([{
