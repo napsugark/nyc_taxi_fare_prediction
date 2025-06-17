@@ -54,6 +54,7 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
         logger.info("Saving model coefficients and feature importance...")
         coefs = pd.DataFrame({"feature": feature_names, "coefficient": model.coef_})
         coefs_file = Path(f"data/feature_importance/feature_importance_{version}_f{num_features}.csv")
+        coefs_file.parent.mkdir(parents=True, exist_ok=True)
         coefs.to_csv(coefs_file, index=False)
         mlflow.log_artifact(str(coefs_file))
 

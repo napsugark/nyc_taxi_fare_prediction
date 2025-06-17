@@ -30,6 +30,7 @@ stages:
       - params.yaml
     outs:
       - models/model.pkl
+      - models/preprocessor.pkl
     params:
       - model
       - features

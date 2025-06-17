@@ -11,11 +11,26 @@ import requests
 
 from inference.prepare_features import prepare_features_for_prediction
 
-# Load model and preprocessor once at startup
-preprocessor = joblib.load("models/preprocessor.pkl")
-model = joblib.load("models/model.pkl")
+# # Load model and preprocessor once at startup
+# preprocessor = joblib.load("models/preprocessor.pkl")
+# model = joblib.load("models/model.pkl")
 
 app = FastAPI(title="Model Prediction API")
+
+MODEL_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction.s3/raw/main/models/model.pkl"
+PREPROCESSOR_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction.s3/raw/main/models/preprocessor.pkl"
+
+def load_joblib_from_url(url: str):
+    response = requests.get(url)
+    response.raise_for_status()
+    # Load directly from bytes buffer
+    return joblib.load(io.BytesIO(response.content))
+
+@app.on_event("startup")
+def startup_event():
+    global model, preprocessor
+    model = load_joblib_from_url(MODEL_URL)
+    preprocessor = load_joblib_from_url(PREPROCESSOR_URL)
 
 app.add_middleware(
     CORSMiddleware,
