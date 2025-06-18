@@ -70,8 +70,8 @@ stages:
       size: 4976017503
     - path: params.yaml
       hash: md5
-      md5: e9479786630fdab974c1e94a07fe3ea2
-      size: 990
+      md5: a954ef690e2640baf67f71e82aa5da69
+      size: 995
     - path: src/nyc_tfp/train_model.py
       hash: md5
       md5: 045f3dbdbb6f409a33077e722beb9427
@@ -105,17 +105,17 @@ stages:
           - doy_cos
           categorical: []
         model:
-          type: Lasso
+          type: LinearRegression
           alpha: 0.01
         paths.final_dataset_path: data/03_final/final_df.csv
         paths.preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
         target_feature: fare_amount
-        version: v4_debug
+        version: v4
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 4b30b034fbfe5109580ec85392fa5a21
-      size: 792
+      md5: 01980dad081caa8c4a10f6c3443fb597
+      size: 873
     - path: models/preprocessor.pkl
       hash: md5
       md5: 98203cc402ed4e7990e4337ca2dbed36
