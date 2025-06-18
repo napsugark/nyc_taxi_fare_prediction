@@ -10,7 +10,7 @@ def run_pipeline(commit_message):
     subprocess.run(["dvc", "repro"], check=True, env=env)
     subprocess.run(["dvc", "push"], check=True, env=env)
     subprocess.run(["git", "add", "."], check=True, env=env)
-    subprocess.run(["git", "commit", "-m", "auto-run"], check=True, env=env)
+    subprocess.run(["git", "commit", "-m", commit_message], check=True, env=env)
 
     
 def main():
