@@ -25,8 +25,8 @@ stages:
       size: 5697178298
     - path: src/nyc_tfp/preprocess.py
       hash: md5
-      md5: ab8eab94e1805ed05b1303dff0f8abf8
-      size: 18773
+      md5: ba43c3109bc1da3b1d6485a34039930d
+      size: 18774
     params:
       params.yaml:
         features:
@@ -59,15 +59,15 @@ stages:
     outs:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: b57946ab9646deccc1b70adbcf5e18c0
-      size: 4976017503
+      md5: e0d5cab3784be3e811de9e6af0597f51
+      size: 4974077302
   train:
     cmd: python -m src.nyc_tfp.train_model
     deps:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: b57946ab9646deccc1b70adbcf5e18c0
-      size: 4976017503
+      md5: e0d5cab3784be3e811de9e6af0597f51
+      size: 4974077302
     - path: params.yaml
       hash: md5
       md5: a954ef690e2640baf67f71e82aa5da69
@@ -114,9 +114,9 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 01980dad081caa8c4a10f6c3443fb597
+      md5: dc2a806d706c04a1201af43fd1da1c37
       size: 873
     - path: models/preprocessor.pkl
       hash: md5
-      md5: 98203cc402ed4e7990e4337ca2dbed36
+      md5: b67bc64efc04207467c3daa1e33c2b68
       size: 3759

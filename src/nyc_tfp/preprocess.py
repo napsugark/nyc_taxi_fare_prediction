@@ -257,8 +257,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         logger.info("Cleaning data...")
 
         ### The amount should be positive
-        df = df[df['fare_amount'] > 0]
-        df = df[df['fare_amount'] < 1000]
+        df = df[df['fare_amount'] > 2.5]
+        df = df[df['fare_amount'] < 300]
 
         # Coordinates - shouldn't be null, zero and should be a NYC location - 
         df = df.dropna(subset=['dropoff_longitude', 'dropoff_latitude'], how='any')
