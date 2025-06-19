@@ -11,6 +11,7 @@ import requests
 import io
 from contextlib import asynccontextmanager
 
+from inference.geocode_address import geocode_address_locationiq, geocode_address_nominatim
 from inference.prepare_features import prepare_features_for_prediction
 
 MODEL_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction/raw/main/models/model.pkl"
@@ -58,40 +59,21 @@ class PredictionInput(BaseModel):
 class PredictionResponse(BaseModel):
     prediction: List[float]
 
-def geocode_address(address: str):
-    url = "https://nominatim.openstreetmap.org/search"
-    params = {
-        "q": address,
-        "format": "json",
-        "limit": 1
-    }
-    headers = {
-        "User-Agent": "TaxiFareApp/1.0 (contact@example.com)"
-    }
-
-    response = requests.get(url, params=params, headers=headers)
-    response.raise_for_status()
-    data = response.json()
-
-    if not data:
-        raise ValueError(f"Could not geocode address: {address}")
-
-    lat = float(data[0]["lat"])
-    lon = float(data[0]["lon"])
-    return lat, lon
 
 @app.post("/predictbyaddress", response_model=PredictionResponse)
 def predict(input_data: PredictionInput):
     try:
         # Convert input to DataFrame
         try:
-            pickup_lat, pickup_lon = geocode_address(input_data.pickup_address)
+            # pickup_lat, pickup_lon = geocode_address_nominatim(input_data.pickup_address)
+            pickup_lat, pickup_lon = geocode_address_locationiq(input_data.pickup_address)
             print(f"Pickup coordinates: {pickup_lat}, {pickup_lon}")
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Pickup address error: {str(e)}")
 
         try:
-            dropoff_lat, dropoff_lon = geocode_address(input_data.dropoff_address)
+            # dropoff_lat, dropoff_lon = geocode_address_nominatim(input_data.dropoff_address)
+            dropoff_lat, dropoff_lon = geocode_address_locationiq(input_data.dropoff_address)
             print(f"Dropoff coordinates: {dropoff_lat}, {dropoff_lon}")
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Dropoff address error: {str(e)}")

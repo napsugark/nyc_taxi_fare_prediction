@@ -1,6 +1,6 @@
-version: "v4_debug"
+version: "v4"
 model:
-  type: "Lasso"          # 'LinearRegression' or 'Lasso'
+  type: "LinearRegression"          # 'LinearRegression' or 'Lasso'
   alpha: 0.01            # For Lasso regression
 
 features:
