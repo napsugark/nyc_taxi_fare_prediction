@@ -1,13 +1,5 @@
 import requests
 import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-api_key = os.getenv("LOCATIONIQ_API_KEY")
-
-if not api_key:
-    raise ValueError("API key not found. Please check your .env file.")
 
 def geocode_address_locationiq(address: str, api_key: str):
     url = "https://us1.locationiq.com/v1/search.php"

@@ -1,4 +1,6 @@
+import os
 from typing import List
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from datetime import datetime
@@ -13,6 +15,13 @@ from contextlib import asynccontextmanager
 
 from inference.geocode_address import geocode_address_locationiq, geocode_address_nominatim
 from inference.prepare_features import prepare_features_for_prediction
+
+# Load environment variables from .env file
+load_dotenv()
+api_key = os.getenv("LOCATIONIQ_API_KEY")
+
+if not api_key:
+    raise ValueError("API key not found. Please check your .env file.")
 
 MODEL_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction/raw/main/models/model.pkl"
 PREPROCESSOR_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction/raw/main/models/preprocessor.pkl"
@@ -66,14 +75,14 @@ def predict(input_data: PredictionInput):
         # Convert input to DataFrame
         try:
             # pickup_lat, pickup_lon = geocode_address_nominatim(input_data.pickup_address)
-            pickup_lat, pickup_lon = geocode_address_locationiq(input_data.pickup_address)
+            pickup_lat, pickup_lon = geocode_address_locationiq(address=input_data.pickup_address, api_key=api_key)
             print(f"Pickup coordinates: {pickup_lat}, {pickup_lon}")
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Pickup address error: {str(e)}")
 
         try:
             # dropoff_lat, dropoff_lon = geocode_address_nominatim(input_data.dropoff_address)
-            dropoff_lat, dropoff_lon = geocode_address_locationiq(input_data.dropoff_address)
+            dropoff_lat, dropoff_lon = geocode_address_locationiq(address=input_data.dropoff_address, api_key=api_key)
             print(f"Dropoff coordinates: {dropoff_lat}, {dropoff_lon}")
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Dropoff address error: {str(e)}")
