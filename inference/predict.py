@@ -1,4 +1,8 @@
+from contextlib import asynccontextmanager
+import io
+import os
 from typing import List
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from datetime import datetime
@@ -7,14 +11,28 @@ import pandas as pd
 import traceback
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
+import requests
 
 from inference.prepare_features import prepare_features_for_prediction
 
-# Load model and preprocessor once at startup
-preprocessor = joblib.load("models/preprocessor.pkl")
-model = joblib.load("models/model.pkl")
 
-app = FastAPI(title="Model Prediction API")
+MODEL_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction/raw/main/models/model.pkl"
+PREPROCESSOR_URL = "https://dagshub.com/napsugar.kelemen/nyc_taxi_fare_prediction/raw/main/models/preprocessor.pkl"
+
+def load_joblib_from_url(url: str):
+    response = requests.get(url)
+    response.raise_for_status()
+    return joblib.load(io.BytesIO(response.content))
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global model, preprocessor
+    model = load_joblib_from_url(MODEL_URL)
+    preprocessor = load_joblib_from_url(PREPROCESSOR_URL)
+    yield
+    # Optional: code to run on shutdown
+
+app = FastAPI(title="Model Prediction API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -69,3 +87,15 @@ def predict(input_data: PredictionInput):
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.get("/")
+def root():
+    return {
+        "service": "Taxi Fare Prediction API",
+        "status": "ok",
+        "description": "This API predicts the fare of a taxi ride based on input parameters like pickup/dropoff location, time, and passenger count.",
+        "endpoints": {
+            "/predict": "POST request to get fare prediction. Requires pickup/dropoff coordinates, datetime, passenger count, etc.",
+            "/health": "GET request to check API health status."
+        }
+    }
