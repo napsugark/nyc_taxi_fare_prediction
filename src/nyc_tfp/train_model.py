@@ -1,3 +1,4 @@
+import os
 import joblib
 import pandas as pd
 from pathlib import Path
@@ -12,6 +13,12 @@ from src.utils.logging_config import logger
 
 from src.nyc_tfp.config import DATASET_DOWNLOAD_PATH, FINAL_DATASET_PATH, PREPROCESSED_DATASET_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
 from src.nyc_tfp.preprocess import load_data, prepare_features, preprocess_columns,  split_data
+
+# Initialize DagsHub for MLflow tracking
+import dagshub
+dagshub.init(repo_owner='napsugar.kelemen',
+             repo_name='nyc_taxi_fare_prediction',
+             mlflow=True)
 
 def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE, alpha=ALPHA):
     if model_type == 'Lasso':
@@ -81,6 +88,14 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
         logger.info(f"Model saved to {model_path}")
 
         logger.info("Model logged successfully.")
+
+        run_id = mlflow.active_run().info.run_id
+        model_uri = f"runs:/{run_id}/model"
+        model_name = f"{model_type}_Model"
+
+        logger.info(f"Registering model under name: {model_name}")
+        mlflow.register_model(model_uri=model_uri, name=model_name)
+
 
 def main():
     logger.info("Starting the training process...")
