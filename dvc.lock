@@ -74,8 +74,8 @@ stages:
       size: 995
     - path: src/nyc_tfp/train_model.py
       hash: md5
-      md5: 045f3dbdbb6f409a33077e722beb9427
-      size: 4431
+      md5: 0ad3fbe4e067b7cd27afa3c8223b5f8b
+      size: 4908
     params:
       params.yaml:
         experiment.name: NYC_Taxi_Fare_Pred
