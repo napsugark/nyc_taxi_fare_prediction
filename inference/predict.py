@@ -4,7 +4,7 @@ import os
 from typing import List
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 import joblib
 import pandas as pd
@@ -44,11 +44,11 @@ app.add_middleware(
 
 class PredictionInput(BaseModel):
     pickup_datetime: datetime = Field(..., description="UTC datetime of pickup")
-    pickup_longitude: float
-    pickup_latitude: float
-    dropoff_longitude: float
-    dropoff_latitude: float
-    passenger_count: int
+    pickup_longitude: float = Field(..., ge=-75, le=-70, description="Longitude in NYC range")
+    pickup_latitude: float = Field(..., ge=35, le=45, description="Latitude in NYC range")
+    dropoff_longitude: float = Field(..., ge=-75, le=-70, description="Longitude in NYC range")
+    dropoff_latitude: float = Field(..., ge=35, le=45, description="Latitude in NYC range")
+    passenger_count: int = Field(..., ge=1, le=6, description="Number of passengers (1-6)")
 
     class Config:
         json_schema_extra = {

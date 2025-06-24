@@ -25,16 +25,12 @@ stages:
       size: 5697178298
     - path: src/nyc_tfp/preprocess.py
       hash: md5
-      md5: ba43c3109bc1da3b1d6485a34039930d
-      size: 18774
+      md5: 0a916f2e2b87f1b64a0cf471b7284d13
+      size: 19043
     params:
       params.yaml:
         features:
           numeric:
-          - pickup_longitude
-          - pickup_latitude
-          - dropoff_longitude
-          - dropoff_latitude
           - trip_distance
           - passenger_count
           - pickup_datetime_year
@@ -59,32 +55,28 @@ stages:
     outs:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: e0d5cab3784be3e811de9e6af0597f51
-      size: 4974077302
+      md5: 230cabb6bdbaf480bbb4c9a73a52b5c5
+      size: 4047285212
   train:
     cmd: python -m src.nyc_tfp.train_model
     deps:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: e0d5cab3784be3e811de9e6af0597f51
-      size: 4974077302
+      md5: 230cabb6bdbaf480bbb4c9a73a52b5c5
+      size: 4047285212
     - path: params.yaml
       hash: md5
-      md5: a954ef690e2640baf67f71e82aa5da69
-      size: 995
+      md5: 93b20c7cf3fcfbe1a9946e1262cec199
+      size: 1085
     - path: src/nyc_tfp/train_model.py
       hash: md5
-      md5: 0ad3fbe4e067b7cd27afa3c8223b5f8b
-      size: 4908
+      md5: 8b7041f0f96e55a78bfea54bdd95548b
+      size: 13402
     params:
       params.yaml:
         experiment.name: NYC_Taxi_Fare_Pred
         features:
           numeric:
-          - pickup_longitude
-          - pickup_latitude
-          - dropoff_longitude
-          - dropoff_latitude
           - trip_distance
           - passenger_count
           - pickup_datetime_year
@@ -114,9 +106,9 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: dc2a806d706c04a1201af43fd1da1c37
-      size: 873
+      md5: ae7be769f5bc21b129f9ff99cd8aeaf2
+      size: 1517
     - path: models/preprocessor.pkl
       hash: md5
-      md5: b67bc64efc04207467c3daa1e33c2b68
-      size: 3759
+      md5: f3aa4082c7d6fe8fa572acd50d1de600
+      size: 3423
