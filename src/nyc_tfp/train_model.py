@@ -5,14 +5,14 @@ from pathlib import Path
 
 import mlflow
 from mlflow.models.signature import infer_signature
+from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LinearRegression, Lasso
-from sklearn.metrics import mean_squared_error, root_mean_squared_error, mean_absolute_error, r2_score
-from src.utils.helpers import get_dvc_md5, save_data
+from src.utils.helpers import get_dvc_md5, save_data, save_train_test_split
 from src.utils.logging_config import logger
 
 
-from src.nyc_tfp.config import DATASET_DOWNLOAD_PATH, FINAL_DATASET_PATH, PREPROCESSED_DATASET_PATH, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
-from src.nyc_tfp.preprocess import load_data, prepare_features, preprocess_columns,  split_data
+from src.nyc_tfp.config import FINAL_DATASET_PATH, MODEL_PATH, PREPROCESSED_DATASET_PATH, PREPROCESSOR_PATH, TRAIN_TEST_SPLIT_DIR, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
+from src.nyc_tfp.preprocess import load_data, prepare_features, preprocess_columns, split_data
 
 # Initialize DagsHub for MLflow tracking
 import dagshub
@@ -20,7 +20,43 @@ dagshub.init(repo_owner='napsugar.kelemen',
              repo_name='nyc_taxi_fare_prediction',
              mlflow=True)
 
-def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE, alpha=ALPHA):
+def split_and_transform(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, ColumnTransformer]:
+    """
+    Splits the dataset into training and testing sets, applies preprocessing, and returns the processed data.
+    
+    This function is a wrapper around the split_and_preprocess function to handle the entire preprocessing pipeline.
+    
+    Returns:
+        tuple: A tuple containing:
+            - X_train_prep: Preprocessed training features.
+            - X_test_prep: Preprocessed testing features.
+            - y_train: Training target variable.
+            - y_test: Testing target variable.
+            - preprocessor: The fitted ColumnTransformer used for preprocessing.
+    """
+    try:
+        logger.info("Preprocessing data for splitting and transformation...")
+        X, y, numeric, boolean, cyclic, categorical, final_df = prepare_features(df)
+        save_data(final_df, Path(FINAL_DATASET_PATH))
+        logger.info(f"Final dataset saved to {FINAL_DATASET_PATH}")
+        logger.info("Splitting data into train and test sets...")
+        X_train, X_test, y_train, y_test = split_data(X, y)
+        save_train_test_split(X_train, X_test, y_train, y_test, output_dir=TRAIN_TEST_SPLIT_DIR)
+        logger.info(f"Train-test split saved to {TRAIN_TEST_SPLIT_DIR}")
+        logger.info("Preprocessing training and test features...")
+        X_train_prep, X_test_prep, preprocessor = preprocess_columns(
+            X_train, X_test, numeric, boolean, cyclic, categorical
+        )
+        return X_train_prep, X_test_prep, y_train, y_test, preprocessor
+    except Exception as e:
+        logger.error(f"Failed to split and transform data: {e}")
+        raise RuntimeError(f"Failed to split and transform data: {e}")
+
+
+def train_and_log_model(X_train, X_test,
+ y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME,
+ model_type=MODEL_TYPE, alpha=ALPHA
+):
     if model_type == 'Lasso':
         logger.info(f"Training Lasso model with alpha={alpha}...")
         model = Lasso(alpha=alpha)
@@ -28,35 +64,38 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
         logger.info("Training Linear Regression model...")
         model = LinearRegression()
     else:
-        raise ValueError(f"model_type must be 'linear' or 'lasso', not {model_type}")
+        raise ValueError(f"model_type must be 'LinearRegression' or 'Lasso', not {model_type}")
+    
+    mlflow.sklearn.autolog(log_input_examples=True, silent=True)
 
     mlflow.set_experiment(experiment_name)
-    with mlflow.start_run(run_name=f"{model_type}_{version}"):
+    with mlflow.start_run() as run:
+
+        logger.info("Fitting the model...")
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
 
-        mse = mean_squared_error(y_test, y_pred)
-        rmse = root_mean_squared_error(y_test, y_pred)
-        mae = mean_absolute_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
+        run_id = run.info.run_id
+        Path("evaluation").mkdir(parents=True, exist_ok=True) 
+        with open("evaluation/run_id.txt", "w") as f:
+            f.write(run_id) 
+        
+        logger.info("Model training completed. Evaluating performance...")
 
-        logger.info(f"Training results: MSE: {mse:.4f}, RMSE: {rmse:.4f}, MAE: {mae:.4f}, R2: {r2:.4f}")
-
-        logger.info(f"Logging model parameters and metrics to MLflow...")
+        logger.info("Logging model parameters and metrics to MLflow...")
         feature_names = preprocessor.get_feature_names_out()
         num_features = len(feature_names)
 
         mlflow.log_param("features", ", ".join(feature_names))
         mlflow.log_param("num_features", num_features)
-        mlflow.log_metric("mse", mse)
-        mlflow.log_metric("rmse", rmse)
-        mlflow.log_metric("mae", mae)
-        mlflow.log_metric("r2", r2)
-        
         mlflow.log_param("Final_dataset_version_md5", get_dvc_md5("data/03_final/final_df.csv.dvc"))
 
         if model_type == 'Lasso':
             mlflow.log_param("alpha", alpha)
+
+        mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_train), name="X_train"), context="training")
+        mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(y_train, columns=["target"]), name="y_train"), context="training")
+        mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(X_test), name="X_test"), context="validation")
+        mlflow.log_input(mlflow.data.from_pandas(pd.DataFrame(y_test, columns=["target"]), name="y_test"), context="validation")
 
         logger.info("Saving model coefficients and feature importance...")
         coefs = pd.DataFrame({"feature": feature_names, "coefficient": model.coef_})
@@ -76,40 +115,29 @@ def train_and_log_model(X_train, X_test, y_train, y_test, preprocessor, version=
             signature=signature,
             input_example=input_example
         )
-        model_path = Path("models/model.pkl")
+        model_path = Path(MODEL_PATH)
         model_path.parent.mkdir(parents=True, exist_ok=True)
-        preprocessor_path = Path("models/preprocessor.pkl")
-        preprocessor_path.parent.mkdir(parents=True, exist_ok=True)
         joblib.dump(model, model_path)
-        joblib.dump(preprocessor, preprocessor_path)
         mlflow.log_artifact(str(model_path))
+
+        preprocessor_path = Path(PREPROCESSOR_PATH)
+        preprocessor_path.parent.mkdir(parents=True, exist_ok=True)
+        joblib.dump(preprocessor, preprocessor_path)
         mlflow.log_artifact(str(preprocessor_path))
-        logger.info(f"Preprocessor saved to {preprocessor_path}")
-        logger.info(f"Model saved to {model_path}")
 
-        logger.info("Model logged successfully.")
+        logger.info(f"Model and preprocessor saved and logged to MLflow.")
 
-        run_id = mlflow.active_run().info.run_id
+        # Register the model manually
         model_uri = f"runs:/{run_id}/model"
         model_name = f"{model_type}_Model"
-
         logger.info(f"Registering model under name: {model_name}")
         mlflow.register_model(model_uri=model_uri, name=model_name)
-
 
 def main():
     logger.info("Starting the training process...")
     df = load_data(PREPROCESSED_DATASET_PATH)
-    X, y, numeric, boolean, cyclic, categorical, final_df = prepare_features(df)
-
-    save_data(final_df, Path(FINAL_DATASET_PATH))
-
-    X_train, X_test, y_train, y_test = split_data(X, y)
-   
-    X_train_prep, X_test_prep, preprocessor = preprocess_columns(
-        X_train, X_test, numeric, boolean, cyclic, categorical
-    )
-
+    X_train_prep, X_test_prep, y_train, y_test, preprocessor = split_and_transform(df)
+    
     train_and_log_model(X_train_prep, X_test_prep, y_train, y_test, preprocessor, version=VERSION, experiment_name=EXPERIMENT_NAME, model_type=MODEL_TYPE,alpha=ALPHA)
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.utils.helpers import save_data
 from src.utils.logging_config import logger
-from src.nyc_tfp.config import PREPROCESSED_DATASET_PATH, RAW_DATASET_PATH, SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE
+from src.nyc_tfp.config import PREPROCESSED_DATASET_PATH, RAND_SEED, RAW_DATASET_PATH, SELECTED_COLUMNS, NUMERIC_FEATURES, BOOLEAN_FEATURES, CYCLIC_FEATURES, CATEGORICAL_FEATURES, TARGET_FEATURE, TEST_SIZE
 
 
 
@@ -367,14 +367,23 @@ def preprocess_columns(
     logger.info("Preprocessing training and test features...")
     try:
         preprocessor = build_preprocessor(numeric, boolean, cyclic, categorical)
-        X_train_prep = preprocessor.fit_transform(X_train)
-        X_test_prep = preprocessor.transform(X_test)
+        X_train_prep = pd.DataFrame(
+            preprocessor.fit_transform(X_train), 
+            columns=preprocessor.get_feature_names_out(), 
+            index=X_train.index
+        )
+        X_test_prep = pd.DataFrame(
+            preprocessor.transform(X_test), 
+            columns=preprocessor.get_feature_names_out(), 
+            index=X_test.index
+        )
+        logger.info(f"Preprocessing completed. Shapes: {X_train_prep.shape=}, {X_test_prep.shape=}")
         return X_train_prep, X_test_prep, preprocessor
     except Exception as e:
         raise RuntimeError(f"Failed to preprocess data: {e}")
 
 
-def split_and_preprocess(X, y, numeric, boolean, cyclic, categorical, test_size=0.2, random_state=42):
+def split_and_preprocess(X, y, numeric, boolean, cyclic, categorical, test_size=TEST_SIZE, random_state=RAND_SEED):
     """
     Splits the dataset into training and testing sets, applies preprocessing, and returns the processed data.
 
