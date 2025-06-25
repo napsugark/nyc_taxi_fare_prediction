@@ -16,3 +16,5 @@ mlartifact/
 .coverage
 *.csv
 *.log
+evaluation/metrics.json
+evaluation/run_id.txt
