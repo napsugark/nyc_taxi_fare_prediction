@@ -40,3 +40,16 @@ stages:
       - experiment.name
       - version
 
+  evaluate:
+    cmd: python -m src.nyc_tfp.evaluate_model
+    deps:
+      - src/nyc_tfp/evaluate_model.py
+      - models/model.pkl
+      - models/preprocessor.pkl
+      - data/train_test_split/X_test.csv
+      - data/train_test_split/y_test.csv
+      - evaluation/run_id.txt
+    outs:
+      - evaluation/metrics.json
+
+

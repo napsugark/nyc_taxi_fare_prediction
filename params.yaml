@@ -1,4 +1,4 @@
-version: "v4"
+version: "0.1.0"  # Version of the project
 model:
   type: "LinearRegression"          # 'LinearRegression' or 'Lasso'
   alpha: 0.01            # For Lasso regression
@@ -34,10 +34,15 @@ features:
 target_feature: fare_amount
 
 paths:
-  dataset_download_path: "data/01_raw"
-  raw_dataset_path: "data/01_raw/train.csv"
-  preprocessed_dataset_path: "data/02_preprocessed/preprocessed_df.csv"
-  final_dataset_path: "data/03_final/final_df.csv"
+  dataset_download_path: data/01_raw
+  raw_dataset_path: data/01_raw/train.csv
+  preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
+  final_dataset_path: data/03_final/final_df.csv
+  train_test_split_dir: data/train_test_split
+  model_path: models/model.pkl
+  preprocessor_path: models/preprocessor.pkl
 
 experiment:
-  name: "NYC_Taxi_Fare_Pred"
+  name: NYC_Taxi_Fare_Pred
+  random_seed: 42
+  test_size: 0.2  
