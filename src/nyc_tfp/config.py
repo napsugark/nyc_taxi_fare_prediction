@@ -24,6 +24,11 @@ DATASET_DOWNLOAD_PATH = params["paths"]["dataset_download_path"]
 RAW_DATASET_PATH = params["paths"]["raw_dataset_path"]
 PREPROCESSED_DATASET_PATH = params["paths"]["preprocessed_dataset_path"]
 FINAL_DATASET_PATH = params["paths"]["final_dataset_path"]
+MODEL_PATH = params["paths"]["model_path"]
+PREPROCESSOR_PATH = params["paths"]["preprocessor_path"]
+TRAIN_TEST_SPLIT_DIR = params["paths"]["train_test_split_dir"]
 
 # Experiment
 EXPERIMENT_NAME = params["experiment"]["name"]
+RAND_SEED = params["experiment"]["random_seed"]
+TEST_SIZE = params["experiment"]["test_size"]
