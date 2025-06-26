@@ -35,9 +35,9 @@ def main():
     y_test = pd.read_csv(f"{TRAIN_TEST_SPLIT_DIR}/y_test.csv")
 
     X_test = pd.DataFrame(
-    preprocessor.transform(X_test),
-    columns=preprocessor.get_feature_names_out()
-)
+        preprocessor.transform(X_test),
+        columns=preprocessor.get_feature_names_out()
+    )
 
     run_id_path = Path("evaluation/run_id.txt")
     if not run_id_path.exists():

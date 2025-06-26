@@ -1,8 +1,15 @@
 # NYC Taxi Fare Prediction
 
-This project is a **machine learning regression pipeline** that aims to predict taxi fares in **New York City** using historical ride data. The project is managed using **[Poetry](https://python-poetry.org/)** for dependency and environment management, and **[MLflow](https://mlflow.org/)** for tracking model experiments.
+This project provides an end-to-end machine learning pipeline to predict taxi fares in New York City using historical ride data. The workflow is:
 
-## 🧠 Project Overview
+* Version-controlled with **DVC** for data and model reproducibility
+* Managed with **Poetry** for dependency management
+* Tracked with **MLflow** for experiment logging
+* Deployed as an API on **Render**
+* Integrated with **DagsHub** for remote experiment tracking and artifact storage, enabling scalable and collaborative MLOps
+
+
+## Project Overview
 
 The goal is to build a robust regression model that can accurately estimate the fare amount for a taxi ride based on features like:
 
@@ -13,15 +20,24 @@ The goal is to build a robust regression model that can accurately estimate the 
 
 I used open datasets such as the https://www.kaggle.com/competitions/new-york-city-taxi-fare-prediction/data.
 
-## 📦 Project Structure
+## Project Structure
 nyc_tfp/
-├── data/ # Raw and processed data
-├── notebooks/ # Jupyter notebooks for EDA and prototyping
-├── src/ # Source code
-├── tests/ # Unit and integration tests
-├── pyproject.toml # Poetry configuration file
-├── mlruns/ # MLflow tracking data
-└── README.md # Project description\
+├── data/                     # Raw, processed, and split data
+├── models/                   # Trained model and preprocessor
+├── evaluation/               # Evaluation results and metrics
+├── src/nyc_tfp/              # Pipeline source code
+│   ├── load_data.py
+│   ├── preprocess.py
+│   ├── train_model.py
+│   └── evaluate_model.py
+├── notebooks/                # Exploratory notebooks
+├── tests/                    # Tests
+├── mlruns/                   # MLflow tracking
+├── params.yaml               # Pipeline parameters
+├── dvc.yaml                  # DVC pipeline definition
+├── pyproject.toml            # Poetry configuration
+└── README.md                 # Project documentation
+
 
 
 ## 🛠️ Setup Instructions
@@ -52,25 +68,47 @@ poetry install
 poetry shell
 ```
 
-## 🚀 Run the Pipeline
+## Run the Pipeline
 
-### Get the dataset from kaggle
 
-- Requires kaggle.json file from your own account (Visit https://www.kaggle.com/settings and create new token for API) - or ask for credentials. 
+This project uses DVC to manage the machine learning pipeline in modular stages. To iterate on experiments and reproduce results, follow these steps:
 
-### Training the model
+1. **Run DVC experiments** incrementally until you achieve satisfactory results:
 
-```bash
-python src/models/train_model.py
-```
+   ```bash
+   dvc exp run
+   ```
 
-### Launch MLFlow UI
-```bash
-mlflow ui
-```
-Then open http://localhost:5000 in your browser to explore experiments, metrics, and model versions.
+   This executes the next pipeline stage and logs the experiment.
 
-## ✅ Testing - not implemented yet
+2. **Apply the best experiment** to the workspace when ready:
+
+   ```bash
+   dvc exp apply <experiment_id>
+   ```
+
+   This updates your workspace with the selected experiment’s outputs.
+
+3. **Reproduce the full pipeline** to ensure all stages are consistent and outputs are up-to-date:
+
+   ```bash
+   dvc repro
+   ```
+
+4. **Push data and model artifacts** to remote storage and commit changes to Git using the helper script provided:
+
+   ```bash
+   python run_pipeline.py -m "commit message describing changes"
+   ```
+
+   This script will:
+
+   * Reproduce the full pipeline with `dvc repro`
+   * Push DVC-tracked files to the remote storage (`dvc push`)
+   * Stage changes and commit them to Git with the specified commit message
+
+
+## ✅ Testing
 
 Run all tests with:
 

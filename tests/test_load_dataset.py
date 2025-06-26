@@ -6,16 +6,16 @@ from src.nyc_tfp.load_data import download_kaggle_competition_data
 def test_download_kaggle_competition_data(mocker):
     mocker.patch.dict("os.environ", {"KAGGLE_USERNAME": "test_user", "KAGGLE_KEY": "test_key"})
 
-    mock_api_cls = mocker.patch("src.utils.load_dataset.KaggleApi")
+    mock_api_cls = mocker.patch("src.nyc_tfp.load_data.KaggleApi")
     mock_api = mock_api_cls.return_value
     mock_api.authenticate.return_value = None
     mock_api.competition_download_files.return_value = None
 
-    mock_exists = mocker.patch("src.utils.load_dataset.Path.exists", side_effect=[False, True])
+    mock_exists = mocker.patch("src.nyc_tfp.load_data.Path.exists", side_effect=[False, True])
 
-    mock_makedirs = mocker.patch("src.utils.load_dataset.os.makedirs")
-    mock_zipfile = mocker.patch("src.utils.load_dataset.zipfile.ZipFile")
-    mock_unlink = mocker.patch("src.utils.load_dataset.Path.unlink")
+    mock_makedirs = mocker.patch("src.nyc_tfp.load_data.os.makedirs")
+    mock_zipfile = mocker.patch("src.nyc_tfp.load_data.zipfile.ZipFile")
+    mock_unlink = mocker.patch("src.nyc_tfp.load_data.Path.unlink")
 
     
     download_kaggle_competition_data("test-competition", "test-path", expected_file="train.csv")
