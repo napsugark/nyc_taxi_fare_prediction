@@ -11,7 +11,7 @@ from src.utils.helpers import get_dvc_md5, save_data, save_train_test_split
 from src.utils.logging_config import logger
 
 
-from src.nyc_tfp.config import FINAL_DATASET_PATH, MODEL_PATH, PREPROCESSED_DATASET_PATH, PREPROCESSOR_PATH, TRAIN_TEST_SPLIT_DIR, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
+from src.nyc_tfp.config import FINAL_DATASET_PATH, MODEL_PATH, PREPROCESSED_DATASET_PATH, PREPROCESSOR_PATH, RUN_TYPE, TRAIN_TEST_SPLIT_DIR, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
 from src.nyc_tfp.preprocess import load_data, prepare_features, preprocess_columns, split_data
 
 # Initialize DagsHub for MLflow tracking
@@ -78,10 +78,10 @@ def train_and_log_model(X_train, X_test,
         Path("evaluation").mkdir(parents=True, exist_ok=True) 
         with open("evaluation/run_id.txt", "w") as f:
             f.write(run_id) 
-        
-        logger.info("Model training completed. Evaluating performance...")
 
-        logger.info("Logging model parameters and metrics to MLflow...")
+        mlflow.set_tag("run_type", RUN_TYPE)
+
+        logger.info(f"Logging {RUN_TYPE=} with {run_id=} model parameters and metrics to MLflow... ")
         feature_names = preprocessor.get_feature_names_out()
         num_features = len(feature_names)
 
