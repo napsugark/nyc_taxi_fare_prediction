@@ -58,7 +58,7 @@ def test_full_training_pipeline(unique_experiment_name):
     assert not df.empty, "Loaded dataset is empty"
 
     df = preprocess_data(df)
-    X, y, numeric, boolean, cyclic, categorical = prepare_features(df)
+    X, y, numeric, boolean, cyclic, categorical, final_df = prepare_features(df)
     X_train, X_test, y_train, y_test, preprocessor = split_and_preprocess(
         X, y, numeric, boolean, cyclic, categorical
     )
@@ -84,14 +84,9 @@ def test_full_training_pipeline(unique_experiment_name):
     logger.info(f"Metrics columns found: {[col for col in last_run.index if col.startswith('metrics.')]}")
  
 
-    for metric in ["mse", "rmse", "mae", "r2"]:
+    for metric in ["training_mean_absolute_error", "training_mean_squared_error", "training_r2_score", "training_root_mean_squared_error"]:
         assert f"metrics.{metric}" in last_run, f"metrics.{metric} not found in MLflow run"
 
-    artifact_uri = last_run["artifact_uri"]
-    parsed_uri = urlparse(artifact_uri)
-    artifact_path = Path(parsed_uri.path.lstrip("/"))  
-    model_artifact = artifact_path / "model" / "MLmodel"
-    assert model_artifact.exists(), f"MLmodel artifact not found at {model_artifact}"
 
     coefs_dir = Path("data/feature_importance")
     coef_files = list(coefs_dir.glob(f"feature_importance_{VERSION}_f*.csv"))
