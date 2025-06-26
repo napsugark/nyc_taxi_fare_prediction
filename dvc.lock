@@ -70,12 +70,12 @@ stages:
       size: 4974077302
     - path: params.yaml
       hash: md5
-      md5: 5991431d0c0299db575168e603733bfb
-      size: 1244
+      md5: 7b8fb781c7b543b7606d0964952dba07
+      size: 1296
     - path: src/nyc_tfp/train_model.py
       hash: md5
-      md5: a71fd1d87a13d324cb15378fc6bfc690
-      size: 6674
+      md5: ad99543da1a1418953d6a0e4931626df
+      size: 7073
     params:
       params.yaml:
         experiment.name: NYC_Taxi_Fare_Pred
@@ -114,7 +114,7 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 1886ef688d118d15e1475d166af73a2a
+      md5: 1354cc9ec250841c4fbd11947e813813
       size: 1677
     - path: models/preprocessor.pkl
       hash: md5
@@ -133,11 +133,11 @@ stages:
       size: 21681895
     - path: evaluation/run_id.txt
       hash: md5
-      md5: 72d258f64624a01584a5e2105a6336b5
+      md5: c664eef85c63a6f61be377718b8efd9f
       size: 32
     - path: models/model.pkl
       hash: md5
-      md5: 1886ef688d118d15e1475d166af73a2a
+      md5: 1354cc9ec250841c4fbd11947e813813
       size: 1677
     - path: models/preprocessor.pkl
       hash: md5

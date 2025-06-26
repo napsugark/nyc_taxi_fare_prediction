@@ -11,7 +11,7 @@ from src.utils.helpers import get_dvc_md5, save_data, save_train_test_split
 from src.utils.logging_config import logger
 
 
-from src.nyc_tfp.config import FINAL_DATASET_PATH, MODEL_PATH, PREPROCESSED_DATASET_PATH, PREPROCESSOR_PATH, RUN_TYPE, TRAIN_TEST_SPLIT_DIR, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
+from src.nyc_tfp.config import FINAL_DATASET_PATH, MODEL_PATH, PREPROCESSED_DATASET_PATH, PREPROCESSOR_PATH, REGISTERED_BY, RUN_TYPE, TRAIN_TEST_SPLIT_DIR, VERSION, EXPERIMENT_NAME, MODEL_TYPE, ALPHA
 from src.nyc_tfp.preprocess import load_data, prepare_features, preprocess_columns, split_data
 
 # Initialize DagsHub for MLflow tracking
@@ -130,8 +130,20 @@ def train_and_log_model(X_train, X_test,
         # Register the model manually
         model_uri = f"runs:/{run_id}/model"
         model_name = f"{model_type}_Model"
+        tags = {
+            "model_type": model_type,
+            "registered_by": REGISTERED_BY,
+            "run_type": RUN_TYPE,
+        }
         logger.info(f"Registering model under name: {model_name}")
-        mlflow.register_model(model_uri=model_uri, name=model_name)
+        result = mlflow.register_model(model_uri=model_uri, name=model_name, tags=tags)
+
+        client = mlflow.MlflowClient()
+        client.set_registered_model_alias(
+            name=model_name,
+            alias=RUN_TYPE,  # prod or exp or repro
+            version=result.version
+        )
 
 def main():
     logger.info("Starting the training process...")
