@@ -9,7 +9,7 @@ features:
     - pickup_latitude
     - dropoff_longitude
     - dropoff_latitude
-    - trip_distance
+    # - trip_distance
     - passenger_count
     - pickup_datetime_year
   boolean:
@@ -43,8 +43,8 @@ paths:
   preprocessor_path: models/preprocessor.pkl
 
 experiment:
-  name: NYC_Taxi_Fare_Pred
+  name: NYC_Taxi_Fare_Pred_Demo
   random_seed: 42
   test_size: 0.2  
-  run_type: repro # 'exp' for experiment, 'repro' for reproduction, 'prod' for production
+  run_type: exp # 'exp' for experiment, 'repro' for reproduction, 'prod' for production
   registered_by: "napsugar"

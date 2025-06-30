@@ -35,7 +35,6 @@ stages:
           - pickup_latitude
           - dropoff_longitude
           - dropoff_latitude
-          - trip_distance
           - passenger_count
           - pickup_datetime_year
           boolean:
@@ -59,33 +58,32 @@ stages:
     outs:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: e0d5cab3784be3e811de9e6af0597f51
-      size: 4974077302
+      md5: 81c180eee9d1f9f6e413f2f010650d35
+      size: 4610749125
   train:
     cmd: python -m src.nyc_tfp.train_model
     deps:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: e0d5cab3784be3e811de9e6af0597f51
-      size: 4974077302
+      md5: 81c180eee9d1f9f6e413f2f010650d35
+      size: 4610749125
     - path: params.yaml
       hash: md5
-      md5: 7b8fb781c7b543b7606d0964952dba07
-      size: 1296
+      md5: 64338e36214998ec1e5d0b4a6f88f031
+      size: 1301
     - path: src/nyc_tfp/train_model.py
       hash: md5
       md5: ad99543da1a1418953d6a0e4931626df
       size: 7073
     params:
       params.yaml:
-        experiment.name: NYC_Taxi_Fare_Pred
+        experiment.name: NYC_Taxi_Fare_Pred_Demo
         features:
           numeric:
           - pickup_longitude
           - pickup_latitude
           - dropoff_longitude
           - dropoff_latitude
-          - trip_distance
           - passenger_count
           - pickup_datetime_year
           boolean:
@@ -114,35 +112,35 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 1354cc9ec250841c4fbd11947e813813
-      size: 1677
+      md5: ce0983d67f9be24769eaf7dee3b99c83
+      size: 1621
     - path: models/preprocessor.pkl
       hash: md5
-      md5: b67bc64efc04207467c3daa1e33c2b68
-      size: 3759
+      md5: 1dff3c696fb43680905404fa032b7923
+      size: 3687
   evaluate:
     cmd: python -m src.nyc_tfp.evaluate_model
     deps:
     - path: data/train_test_split/X_test.csv
       hash: md5
-      md5: 630b1976bafeb64e010190834417bb48
-      size: 971562507
+      md5: ad8856f9668fa034b720a468d8fa99eb
+      size: 899282775
     - path: data/train_test_split/y_test.csv
       hash: md5
       md5: 4d44d52089637ab00e58205982626cb0
       size: 21681895
     - path: evaluation/run_id.txt
       hash: md5
-      md5: c664eef85c63a6f61be377718b8efd9f
+      md5: 85f507d91974bb40937d93288d1e5ed6
       size: 32
     - path: models/model.pkl
       hash: md5
-      md5: 1354cc9ec250841c4fbd11947e813813
-      size: 1677
+      md5: ce0983d67f9be24769eaf7dee3b99c83
+      size: 1621
     - path: models/preprocessor.pkl
       hash: md5
-      md5: b67bc64efc04207467c3daa1e33c2b68
-      size: 3759
+      md5: 1dff3c696fb43680905404fa032b7923
+      size: 3687
     - path: src/nyc_tfp/evaluate_model.py
       hash: md5
       md5: e7753d2cbc37157cfacbd18ba3d06580
@@ -150,5 +148,5 @@ stages:
     outs:
     - path: evaluation/metrics.json
       hash: md5
-      md5: 74a2507ccbe732b049c6ea3b9d785ae3
-      size: 121
+      md5: 4817ddcb792151adab0c2cbbc8f80c78
+      size: 120
