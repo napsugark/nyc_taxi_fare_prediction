@@ -1,7 +1,7 @@
 version: "0.1.0"  # Version of the project
 model:
-  type: "LinearRegression"          # 'LinearRegression' or 'Lasso'
-  alpha: 0.01            # For Lasso regression
+  type: "Lasso"          # 'LinearRegression' or 'Lasso'
+  alpha: 0.1            # For Lasso regression
 
 features:
   numeric:
@@ -43,8 +43,8 @@ paths:
   preprocessor_path: models/preprocessor.pkl
 
 experiment:
-  name: NYC_Taxi_Fare_Pred
+  name: NYC_Taxi_Fare_Pred_Demo
   random_seed: 42
   test_size: 0.2  
-  run_type: repro # 'exp' for experiment, 'repro' for reproduction, 'prod' for production
+  run_type: exp # 'exp' for experiment, 'repro' for reproduction, 'prod' for production
   registered_by: "napsugar"
