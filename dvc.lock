@@ -70,15 +70,15 @@ stages:
       size: 4974077302
     - path: params.yaml
       hash: md5
-      md5: 7b8fb781c7b543b7606d0964952dba07
-      size: 1296
+      md5: 7cf034ade3159df05f41d96856380b5b
+      size: 1288
     - path: src/nyc_tfp/train_model.py
       hash: md5
       md5: ad99543da1a1418953d6a0e4931626df
       size: 7073
     params:
       params.yaml:
-        experiment.name: NYC_Taxi_Fare_Pred
+        experiment.name: NYC_Taxi_Fare_Pred_Demo
         features:
           numeric:
           - pickup_longitude
@@ -105,17 +105,29 @@ stages:
           - doy_cos
           categorical: []
         model:
-          type: LinearRegression
+          type: Lasso
           alpha: 0.01
         paths.final_dataset_path: data/03_final/final_df.csv
         paths.preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
         target_feature: fare_amount
         version: 0.1.0
     outs:
+    - path: data/train_test_split/X_test.csv
+      hash: md5
+      md5: 630b1976bafeb64e010190834417bb48
+      size: 971562507
+    - path: data/train_test_split/y_test.csv
+      hash: md5
+      md5: 4d44d52089637ab00e58205982626cb0
+      size: 21681895
+    - path: evaluation/run_id.txt
+      hash: md5
+      md5: 23394f0e76a859126e3bd42550c5bc54
+      size: 32
     - path: models/model.pkl
       hash: md5
-      md5: 1354cc9ec250841c4fbd11947e813813
-      size: 1677
+      md5: 5eb73cd50eb7c3d0de9cb0b452820dae
+      size: 1596
     - path: models/preprocessor.pkl
       hash: md5
       md5: b67bc64efc04207467c3daa1e33c2b68
@@ -133,12 +145,12 @@ stages:
       size: 21681895
     - path: evaluation/run_id.txt
       hash: md5
-      md5: c664eef85c63a6f61be377718b8efd9f
+      md5: 23394f0e76a859126e3bd42550c5bc54
       size: 32
     - path: models/model.pkl
       hash: md5
-      md5: 1354cc9ec250841c4fbd11947e813813
-      size: 1677
+      md5: 5eb73cd50eb7c3d0de9cb0b452820dae
+      size: 1596
     - path: models/preprocessor.pkl
       hash: md5
       md5: b67bc64efc04207467c3daa1e33c2b68
@@ -150,5 +162,5 @@ stages:
     outs:
     - path: evaluation/metrics.json
       hash: md5
-      md5: 74a2507ccbe732b049c6ea3b9d785ae3
-      size: 121
+      md5: e1998e9caed2b811da05ac85cdbfafc8
+      size: 119
