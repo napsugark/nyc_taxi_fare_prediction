@@ -18,17 +18,17 @@ features:
     - pickup_datetime_is_night
     - pickup_datetime_is_early_morning
     - pickup_datetime_is_rush_hour
-  cyclic:
-    - hour_sin
-    - hour_cos
-    - dow_sin
-    - dow_cos
-    - month_sin
-    - month_cos
-    - doy_sin
-    - doy_cos
+  # cyclic:
+  #   - hour_sin
+  #   - hour_cos
+  #   - dow_sin
+  #   - dow_cos
+  #   - month_sin
+  #   - month_cos
+  #   - doy_sin
+  #   - doy_cos
 
-  # cyclic: []
+  cyclic: []
   categorical: []
 
 target_feature: fare_amount
@@ -43,7 +43,7 @@ paths:
   preprocessor_path: models/preprocessor.pkl
 
 experiment:
-  name: NYC_Taxi_Fare_Pred
+  name: NYC_Taxi_Fare_Pred_Demo
   random_seed: 42
   test_size: 0.2  
   run_type: repro # 'exp' for experiment, 'repro' for reproduction, 'prod' for production

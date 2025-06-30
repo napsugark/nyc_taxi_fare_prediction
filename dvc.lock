@@ -44,41 +44,33 @@ stages:
           - pickup_datetime_is_night
           - pickup_datetime_is_early_morning
           - pickup_datetime_is_rush_hour
-          cyclic:
-          - hour_sin
-          - hour_cos
-          - dow_sin
-          - dow_cos
-          - month_sin
-          - month_cos
-          - doy_sin
-          - doy_cos
+          cyclic: []
           categorical: []
         paths.preprocessed_dataset_path: data/02_preprocessed/preprocessed_df.csv
         paths.raw_dataset_path: data/01_raw/train.csv
     outs:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: e0d5cab3784be3e811de9e6af0597f51
-      size: 4974077302
+      md5: b809b9b0fe94866e056e0ba2913bbaa7
+      size: 2108528834
   train:
     cmd: python -m src.nyc_tfp.train_model
     deps:
     - path: data/02_preprocessed/preprocessed_df.csv
       hash: md5
-      md5: e0d5cab3784be3e811de9e6af0597f51
-      size: 4974077302
+      md5: b809b9b0fe94866e056e0ba2913bbaa7
+      size: 2108528834
     - path: params.yaml
       hash: md5
-      md5: 7b8fb781c7b543b7606d0964952dba07
-      size: 1296
+      md5: c063db21377cb54ea61d4a2cc0767be8
+      size: 1317
     - path: src/nyc_tfp/train_model.py
       hash: md5
       md5: ad99543da1a1418953d6a0e4931626df
       size: 7073
     params:
       params.yaml:
-        experiment.name: NYC_Taxi_Fare_Pred
+        experiment.name: NYC_Taxi_Fare_Pred_Demo
         features:
           numeric:
           - pickup_longitude
@@ -94,15 +86,7 @@ stages:
           - pickup_datetime_is_night
           - pickup_datetime_is_early_morning
           - pickup_datetime_is_rush_hour
-          cyclic:
-          - hour_sin
-          - hour_cos
-          - dow_sin
-          - dow_cos
-          - month_sin
-          - month_cos
-          - doy_sin
-          - doy_cos
+          cyclic: []
           categorical: []
         model:
           type: LinearRegression
@@ -114,35 +98,35 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 1354cc9ec250841c4fbd11947e813813
-      size: 1677
+      md5: c1f1c13a0b97ebd49f11e86c6522392b
+      size: 1389
     - path: models/preprocessor.pkl
       hash: md5
-      md5: b67bc64efc04207467c3daa1e33c2b68
-      size: 3759
+      md5: d83c2a40046ad0fa7c3133b5f52519bf
+      size: 3183
   evaluate:
     cmd: python -m src.nyc_tfp.evaluate_model
     deps:
     - path: data/train_test_split/X_test.csv
       hash: md5
-      md5: 630b1976bafeb64e010190834417bb48
-      size: 971562507
+      md5: 8ee972f17559ec394f4176fa6733e0d7
+      size: 403486831
     - path: data/train_test_split/y_test.csv
       hash: md5
       md5: 4d44d52089637ab00e58205982626cb0
       size: 21681895
     - path: evaluation/run_id.txt
       hash: md5
-      md5: c664eef85c63a6f61be377718b8efd9f
+      md5: 437582489f80ce57d91f72fcfe70ccc5
       size: 32
     - path: models/model.pkl
       hash: md5
-      md5: 1354cc9ec250841c4fbd11947e813813
-      size: 1677
+      md5: c1f1c13a0b97ebd49f11e86c6522392b
+      size: 1389
     - path: models/preprocessor.pkl
       hash: md5
-      md5: b67bc64efc04207467c3daa1e33c2b68
-      size: 3759
+      md5: d83c2a40046ad0fa7c3133b5f52519bf
+      size: 3183
     - path: src/nyc_tfp/evaluate_model.py
       hash: md5
       md5: e7753d2cbc37157cfacbd18ba3d06580
@@ -150,5 +134,5 @@ stages:
     outs:
     - path: evaluation/metrics.json
       hash: md5
-      md5: 74a2507ccbe732b049c6ea3b9d785ae3
+      md5: 56dbfc9a1229b4ea279c9f039d56f52f
       size: 121
