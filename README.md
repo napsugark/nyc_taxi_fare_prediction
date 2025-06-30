@@ -21,6 +21,7 @@ The goal is to build a robust regression model that can accurately estimate the 
 I used open datasets such as the https://www.kaggle.com/competitions/new-york-city-taxi-fare-prediction/data.
 
 ## Project Structure
+```
 nyc_tfp/
 ├── data/                     # Raw, processed, and split data
 ├── models/                   # Trained model and preprocessor
@@ -37,6 +38,7 @@ nyc_tfp/
 ├── dvc.yaml                  # DVC pipeline definition
 ├── pyproject.toml            # Poetry configuration
 └── README.md                 # Project documentation
+```
 
 
 
