@@ -45,7 +45,7 @@ nyc_tfp/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/napsugark/nyc-taxi-fare-prediction.git
+git clone https://github.com/napsugark/nyc_taxi_fare_prediction.git
 cd nyc-taxi-fare-prediction
 ```
 
